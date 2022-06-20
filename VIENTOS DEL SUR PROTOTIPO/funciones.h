@@ -17,7 +17,15 @@ bool buscarEmpleadoContra(const char *);
 ///PROTOTIPOS
 
 ///MENU ADMIN
+bool buscarAdmin(int);
+
+bool buscarAdminContra(const char *);
+
+bool buscarTipo(int,const char *);
+
+void menuAdmin();
 void crearEmpleado();
+
 ///
 
 ///MENU PLATOS
@@ -36,9 +44,9 @@ void restablecerPlato();
 
 
 ///MENU EMPLEADOS
-void menuEmpleados();
+void menuEmpleados(int);
 
-void mostrarEmpleados();
+void mostrarEmpleadosRegistrados();
 
 void mostrarClientesRegistrados();
 ///
@@ -65,7 +73,6 @@ void menuVentasPedidos();
 void menuVentasCliente(int);
 void mostrarPedido(int);
 
-void menuVentasEmpleado(int);
 void mostrarVentas();
 bool clienteNoAtendido(int);
 int traerCliente(int);
@@ -138,17 +145,53 @@ bool buscarEmpleadoContra(const char *contrasenia){
 ///
 
 
-///FUNCIONES
-
 ///MENU ADMIN
+bool buscarAdmin(int dni){
+    Admin reg;
+    int pos=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getDNI()==dni){
+            return true;
+        }
+        pos++;
+    }
+    return false;
+}
+
+bool buscarAdminContra(const char *contrasenia){
+    Admin reg;
+    int pos=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(strcmp(reg.getContrasenia(),contrasenia)==0){
+            return true;
+        }
+        pos++;
+    }
+    return false;
+}
+
+bool buscarTipo(int dni,const char *contrasenia){
+    Admin reg;
+    int pos=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getDNI()==dni && strcmp(reg.getContrasenia(),contrasenia)==0){
+            if(reg.getTipo()==1){
+                return true;
+            }
+        }
+        pos++;
+    }
+    return false;
+}
+
 void crearEmpleado(){
+    system("cls");
     Empleado reg;
-    int dni,pos=0;
+    int pos=0,tipo=2,dni;
     bool existeEmpleado=false;
     cout<<"**************************"<<endl;
-    cout<<"*      ACCESO ADMIN      *"<<endl;
+    cout<<"*   REGISTRAR EMPLEADO   *"<<endl;
     cout<<"**************************"<<endl<<endl;
-    cout<<"<<<REGISTRAR NUEVO EMPLEADO>>>"<<endl;
     cout<<"DNI: ";
     cin>>dni;
     if(dni==0){
@@ -161,7 +204,7 @@ void crearEmpleado(){
         pos++;
     }
     if(existeEmpleado==false){
-        reg.Cargar();
+        reg.Cargar(tipo);
         reg.setDNI(dni);
         reg.grabarEnDisco();
     }
@@ -172,6 +215,8 @@ void crearEmpleado(){
 }
 ///
 
+
+///FUNCIONES
 
 ///MENU PLATOS
 void agregarPlato(){
@@ -216,8 +261,10 @@ void mostrarPorCodigo(){
     if(existePlato==true){
         while(reg.leerDeDisco(pos)==1){
             if(strcmp(reg.getCodigoPlato(),codPlat)==0){
-                reg.Mostrar();
-                cout<<"----------------------------------"<<endl;
+                if(reg.getEstado()==1){
+                    reg.Mostrar();
+                    cout<<"----------------------------------"<<endl;
+                }
             }
             pos++;
         }
@@ -236,8 +283,10 @@ void mostrarPlatos(){
     cout<<"*                          *"<<endl;
     cout<<"****************************"<<endl<<endl;
     while(reg.leerDeDisco(pos)==1){
-        reg.Mostrar();
-        cout<<"----------------------------------"<<endl;
+        if(reg.getEstado()==1){
+            reg.Mostrar();
+            cout<<"----------------------------------"<<endl;
+        }
         pos++;
     }
     system("pause");
@@ -314,7 +363,7 @@ void restablecerPlato(){
 
 
 ///MENU EMPLEADO
-void mostrarEmpleados(){
+void mostrarEmpleadosRegistrados(){
     system("cls");
     Empleado reg;
     int pos=0;
@@ -358,7 +407,7 @@ void mostrarClientesRegistrados(){
 void registrarCliente(){
     system("cls");
     Cliente reg;
-    int dni;
+    int dni,tipo=3;
     bool existeCliente;
     cout<<"*****************************"<<endl;
     cout<<"*                           *"<<endl;
@@ -370,7 +419,7 @@ void registrarCliente(){
     existeCliente=buscarCliente(dni);
     if(existeCliente==false){
         reg.setDNI(dni);
-        reg.Cargar();
+        reg.Cargar(tipo);
         reg.grabarEnDisco();
         cout<<endl;
         cout<<"<<<CLIENTE REGISTRADO>>>"<<endl;
@@ -621,36 +670,6 @@ void mostrarPedido(int dni){
     cout<<"       IMPORTE TOTAL: $"<<acumPrecio<<endl;
     cout<<"**************************************"<<endl;
     system("pause");
-}
-
-void menuVentasEmpleado(int dni){
-    int opc;
-    while(true){
-        system("cls");
-        cout<<"*******************************"<<endl;
-        cout<<"*                             *"<<endl;
-        cout<<"*         MENÚ VENTAS         *"<<endl;
-        cout<<"*                             *"<<endl;
-        cout<<"*******************************"<<endl<<endl;
-        cout<<"------------------------------"<<endl;
-        cout<<"1) MOSTRAR VENTAS"<<endl;
-        cout<<"2) ATENDER CLIENTE"<<endl;
-        cout<<"0) VOLVER"<<endl;
-        cout<<"------------------------------"<<endl;
-        cout<<"OPCIÓN: -> ";
-        cin>>opc;
-        switch(opc){
-            case 1: mostrarVentas();
-                break;
-            case 2: atenderCliente(dni);
-                break;
-            case 0: return;
-                break;
-            default: cout<<"OPCIÓN INCORRECTA."<<endl;
-                    system("pause");
-                break;
-        }
-    }
 }
 
 void mostrarVentas(){
