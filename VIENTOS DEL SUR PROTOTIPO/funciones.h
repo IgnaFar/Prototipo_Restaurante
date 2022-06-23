@@ -57,6 +57,8 @@ void menuEmpleados(int);
 void mostrarEmpleadosRegistrados();
 
 void mostrarClientesRegistrados();
+
+void reportes();
 ///
 
 
@@ -89,8 +91,8 @@ int traerCliente(int);
 void atenderCliente(int);
 void atenderAlCliente(int,int);
 
-void cobrarVentas();
-int buscarVenta(int);
+void cobrarVentas(int);
+int buscarVenta(int,int);
 
 void mostrarVentasCobradas();
 ///
@@ -595,6 +597,10 @@ void mostrarClientesRegistrados(){
     }
     system("pause");
 }
+
+void reportes(){
+
+}
 ///
 
 
@@ -1016,7 +1022,7 @@ void atenderAlCliente(int dniCliente,int dniEmp){
     }
 }
 
-void cobrarVentas(){
+void cobrarVentas(int dniEmp){
     system("cls");
     VentaDetalle reg;
     int pos=0,dniCliente,idDeVenta;
@@ -1039,11 +1045,15 @@ void cobrarVentas(){
     existeCliente=buscarCliente(dniCliente);
     if(existeCliente==true){
         cout<<endl;
-        idDeVenta=buscarVenta(dniCliente);
+        idDeVenta=buscarVenta(dniCliente,dniEmp);
+        if(idDeVenta==-1){
+            return;
+        }
         pos=0;
         while(reg.leerDeDisco(pos)){
             if(reg.getIDVenta()==idDeVenta){
                 reg.setEstado(false);
+                reg.modificarEnDisco(pos);
             }
             pos++;
         }
@@ -1056,45 +1066,66 @@ void cobrarVentas(){
     }
 }
 
-int buscarVenta(int dniCliente){
+int buscarVenta(int dniCliente,int dniEmp){
+    system("cls");
     VentaCabecera reg;
-    int pos=0,idventa;
+    int pos=0,idventa,cantReg=0;
     while(reg.leerDeDisco(pos)){
         if(reg.getDNICliente()==dniCliente){
-            reg.Mostrar();
-            cout<<"----------------------------------"<<endl;
+            if(reg.getDNIEmpleado()==dniEmp){
+                reg.Mostrar();
+                cout<<"----------------------------------"<<endl;
+                cantReg++;
+            }
         }
         pos++;
     }
-    cout<<"ESCOJA EL ID DE VENTA A COBRAR: ";
-    cin>>idventa;
-    pos=0;
-    while(reg.leerDeDisco(pos)){
-        if(reg.getIDVenta()==idventa){
-            reg.setDNIEmpleado(-2);
-            return idventa;
+    if(cantReg==0){
+        cout<<"NO HAY REGISTROS O LOS CLIENTES NO ESTÁN ATENDIDOS."<<endl;
+        system("pause");
+        return -1;
+    }
+    else{
+        cout<<"ESCOJA EL ID DE VENTA A COBRAR: ";
+        cin>>idventa;
+        pos=0;
+        while(reg.leerDeDisco(pos)){
+            if(reg.getIDVenta()==idventa){
+                reg.setDNIEmpleado(-2);
+                reg.modificarEnDisco(pos);
+                return idventa;
+            }
+            pos++;
         }
-        pos++;
     }
 }
 
 void mostrarVentasCobradas(){
     system("cls");
     VentaDetalle reg;
-    int pos=0;
+    VentaCabecera aux;
+    int pos1=0,pos2=0,cantReg=0;
     cout<<"*********************************"<<endl;
     cout<<"*                               *"<<endl;
-    cout<<"*         COBRAR VENTAS         *"<<endl;
+    cout<<"*    MOSTRAR VENTAS COBRADAS    *"<<endl;
     cout<<"*                               *"<<endl;
     cout<<"*********************************"<<endl<<endl;
     cout<<"----------------------------------"<<endl;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos1)){
         if(reg.getEstado()==false){
-            reg.Mostrar();
-            cout<<"----------------------------------"<<endl;
+            while(aux.leerDeDisco(pos2)){
+                if(aux.getDNIEmpleado()==-2){
+                    reg.Mostrar();
+                    cout<<"----------------------------------"<<endl;
+                    cantReg++;
+                }
+                pos2++;
+            }
         }
-        pos++;
+        pos1++;
+        pos2=0;
     }
+    if(cantReg==0) cout<<"NO HAY VENTAS COBRADAS."<<endl;
     system("pause");
 }
 ///

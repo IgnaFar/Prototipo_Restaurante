@@ -174,6 +174,7 @@ void menuEmpleados(int dni){
         cout<<"4) COBRAR VENTAS"<<endl;
         cout<<"5) MOSTRAR VENTAS COBRADAS"<<endl;
         cout<<"6) MOSTRAR CLIENTES REGISTRADOS"<<endl;
+        cout<<"7) REPORTES"<<endl;
         cout<<"0) VOLVER"<<endl;
         cout<<"------------------------------"<<endl;
         cout<<"OPCIÓN: -> ";
@@ -185,11 +186,13 @@ void menuEmpleados(int dni){
                 break;
             case 3: atenderCliente(dni);
                 break;
-            case 4: cobrarVentas();
+            case 4: cobrarVentas(dni);
                 break;
             case 5: mostrarVentasCobradas();
                 break;
             case 6: mostrarClientesRegistrados();
+                break;
+            case 7: reportes();
                 break;
             case 0: return;
                 break;
@@ -240,7 +243,7 @@ void menuAdmin(){
         cout<<"2) REGISTRAR NUEVO EMPLEADO"<<endl;
         cout<<"3) VOLVER"<<endl;
         cout<<"------------------------------"<<endl;
-        cout<<"OPCIÓN: -> "<<endl;
+        cout<<"OPCIÓN: -> ";
         cin>>opc;
         switch(opc){
             case 1: mostrarEmpleadosRegistrados();
