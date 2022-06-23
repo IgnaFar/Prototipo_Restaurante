@@ -20,13 +20,14 @@
 
 1655602104 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\restaurante\funciones.h
 
-1655725051 source:d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\main.cpp
+1655985230 source:d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\main.cpp
 	<iostream>
 	<cstdio>
 	<cstring>
 	<clocale>
 	"fecha.h"
-	"venta.h"
+	"ventaDetalle.h"
+	"ventaCabecera.h"
 	"persona.h"
 	"plato.h"
 	"funciones.h"
@@ -35,9 +36,13 @@
 
 1655576453 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\venta.h
 
-1655676434 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\persona.h
+1655979914 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\persona.h
 
-1655433520 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\plato.h
+1655983044 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\plato.h
 
-1655677673 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\funciones.h
+1655985360 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\funciones.h
+
+1655984942 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\ventadetalle.h
+
+1655980041 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\ventacabecera.h
 

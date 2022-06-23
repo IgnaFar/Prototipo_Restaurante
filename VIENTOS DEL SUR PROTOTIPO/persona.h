@@ -51,23 +51,23 @@ void Cliente::Mostrar(){
     cout<<"ESTADO: "<<estado<<endl;
 }
 
-int Cliente::grabarEnDisco(){
-    FILE *p;
-    p=fopen("cliente.dat", "ab");
-    if(p==NULL) return -1;
-    int escribio=fwrite(this,sizeof(Cliente),1,p);
-    fclose(p);
-    return escribio;
-}
-
 int Cliente::leerDeDisco(int pos){
     FILE *p;
     p=fopen("cliente.dat", "rb");
     if(p==NULL) return -1;
-    fseek(p,sizeof(Cliente)*pos,0);
-    int leyo=fread(this,sizeof(Cliente),1,p);
+    fseek(p, sizeof(Cliente)*pos,0);
+    int leyo=fread(this, sizeof *this,1, p);
     fclose(p);
     return leyo;
+}
+
+int Cliente::grabarEnDisco(){
+    FILE *p;
+    p=fopen("cliente.dat", "ab");
+    if(p==NULL) return -1;
+    int grabo=fwrite(this, sizeof *this,1, p);
+    fclose(p);
+    return grabo;
 }
 
 ///EMPLEADO
@@ -77,23 +77,23 @@ class Empleado:public Cliente{
         int leerDeDisco(int);
 };
 
-int Empleado::grabarEnDisco(){
-    FILE *p;
-    p=fopen("empleado.dat", "ab");
-    if(p==NULL) return -1;
-    int escribio=fwrite(this,sizeof(Empleado),1,p);
-    fclose(p);
-    return escribio;
-}
-
 int Empleado::leerDeDisco(int pos){
     FILE *p;
     p=fopen("empleado.dat", "rb");
     if(p==NULL) return -1;
-    fseek(p,sizeof(Empleado)*pos,0);
-    int leyo=fread(this,sizeof(Empleado),1,p);
+    fseek(p, sizeof(Empleado)*pos,0);
+    int leyo=fread(this, sizeof *this,1, p);
     fclose(p);
     return leyo;
+}
+
+int Empleado::grabarEnDisco(){
+    FILE *p;
+    p=fopen("empleado.dat", "ab");
+    if(p==NULL) return -1;
+    int grabo=fwrite(this, sizeof *this,1, p);
+    fclose(p);
+    return grabo;
 }
 
 class Admin:public Cliente{
@@ -102,22 +102,22 @@ class Admin:public Cliente{
         int leerDeDisco(int);
 };
 
-int Admin::grabarEnDisco(){
-    FILE *p;
-    p=fopen("admin.dat", "ab");
-    if(p==NULL) return -1;
-    int escribio=fwrite(this,sizeof(Admin),1,p);
-    fclose(p);
-    return escribio;
-}
-
 int Admin::leerDeDisco(int pos){
     FILE *p;
     p=fopen("admin.dat", "rb");
     if(p==NULL) return -1;
-    fseek(p,sizeof(Admin)*pos,0);
-    int leyo=fread(this,sizeof(Admin),1,p);
+    fseek(p, sizeof(Admin)*pos,0);
+    int leyo=fread(this, sizeof *this,1, p);
     fclose(p);
     return leyo;
+}
+
+int Admin::grabarEnDisco(){
+    FILE *p;
+    p=fopen("admin.dat", "ab");
+    if(p==NULL) return -1;
+    int grabo=fwrite(this, sizeof *this,1, p);
+    fclose(p);
+    return grabo;
 }
 #endif // PERSONA_H_INCLUDED

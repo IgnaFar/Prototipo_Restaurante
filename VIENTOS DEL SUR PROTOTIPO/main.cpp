@@ -6,7 +6,8 @@
 using namespace std;
 
 #include "fecha.h"
-#include "venta.h"
+#include "ventaDetalle.h"
+#include "ventaCabecera.h"
 #include "persona.h"
 #include "plato.h"
 #include "funciones.h"
@@ -88,12 +89,13 @@ int main(){
                         }
                         else{
                             cout<<"LA CONTRASEÑA NO ES CORRECTA."<<endl;
+                            system("pause");
                         }
                     }
                     else{
                         cout<<"EL DNI NO ES CORRECTO."<<endl;
+                        system("pause");
                     }
-                    system("pause");
                 break;
             case 0: system("cls");
                 cout<<"HASTA LUEGO."<<endl;
@@ -169,7 +171,9 @@ void menuEmpleados(int dni){
         cout<<"1) MENÚ PLATOS"<<endl;
         cout<<"2) MOSTRAR VENTAS"<<endl;
         cout<<"3) ATENDER CLIENTE"<<endl;
-        cout<<"4) MOSTRAR CLIENTES REGISTRADOS"<<endl;
+        cout<<"4) COBRAR VENTAS"<<endl;
+        cout<<"5) MOSTRAR VENTAS COBRADAS"<<endl;
+        cout<<"6) MOSTRAR CLIENTES REGISTRADOS"<<endl;
         cout<<"0) VOLVER"<<endl;
         cout<<"------------------------------"<<endl;
         cout<<"OPCIÓN: -> ";
@@ -181,7 +185,11 @@ void menuEmpleados(int dni){
                 break;
             case 3: atenderCliente(dni);
                 break;
-            case 4: mostrarClientesRegistrados();
+            case 4: cobrarVentas();
+                break;
+            case 5: mostrarVentasCobradas();
+                break;
+            case 6: mostrarClientesRegistrados();
                 break;
             case 0: return;
                 break;
@@ -255,12 +263,20 @@ void menuPlatos(){
     int opc;
     while(true){
         system("cls");
-        cout<<"--------MENÚ PLATOS--------"<<endl;
+        cout<<"*******************************"<<endl;
+        cout<<"*                             *"<<endl;
+        cout<<"*         MENÚ PLATOS         *"<<endl;
+        cout<<"*                             *"<<endl;
+        cout<<"*******************************"<<endl<<endl;
+        cout<<"------------------------------"<<endl;
         cout<<"1) AGREGAR PLATO"<<endl;
         cout<<"2) MOSTRAR PLATO POR CODIGO"<<endl;
         cout<<"3) MOSTRAR TODOS LOS PLATOS"<<endl;
-        cout<<"4) ELIMINAR PLATO"<<endl;
-        cout<<"5) RESTABLECER PLATO"<<endl;
+        cout<<"4) AGREGAR STOCK"<<endl;
+        cout<<"5) MODIFICAR NOMBRE DEL PLATO"<<endl;
+        cout<<"6) MODIFICAR DESCRIPCIÓN DEL PLATO"<<endl;
+        cout<<"7) ELIMINAR PLATO"<<endl;
+        cout<<"8) RESTABLECER PLATO"<<endl;
         cout<<"0) VOLVER"<<endl;
         cout<<"------------------------------"<<endl;
         cout<<"OPCIÓN: -> ";
@@ -272,9 +288,15 @@ void menuPlatos(){
                 break;
             case 3: mostrarPlatos();
                 break;
-            case 4: eliminarPlato();
+            case 4: agregarStock();
                 break;
-            case 5: restablecerPlato();
+            case 5: modificarNombre();
+                break;
+            case 6: modificarDescripcion();
+                break;
+            case 7: eliminarPlato();
+                break;
+            case 8: restablecerPlato();
                 break;
             case 0: return;
                 break;
