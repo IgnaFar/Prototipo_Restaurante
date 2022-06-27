@@ -21,10 +21,10 @@ bool buscarAdmin(int);
 
 bool buscarAdminContra(const char *);
 
-bool buscarTipo(int,const char *);
-
 void menuAdmin();
 void crearEmpleado();
+void modificarDatosCliente(int);
+void modificarDatosEmpleado(int);
 
 ///
 
@@ -44,6 +44,12 @@ void cambiarNombre(const char *,const char *);
 
 void modificarDescripcion();
 void cambiarDescripcion(const char *,const char *);
+
+void modificarPrecio();
+void cambiarPrecio(const char *,float);
+
+void modificarStock();
+void cambiarStock(const char *,int);
 
 void eliminarPlato();
 
@@ -69,6 +75,7 @@ void registrarCliente();
 
 void crearPedido(int);
 int generarIDVenta();
+int generarIDDetalle();
 void traerPlato();
 int chequearStock(const char *,int);
 float importePlato(const char *,int);
@@ -102,7 +109,7 @@ void mostrarVentasCobradas();
 bool buscarPlato(const char *codPlat){
     Plato reg;
     int pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(strcmp(reg.getCodigoPlato(),codPlat)==0){
             return true;
         }
@@ -114,7 +121,7 @@ bool buscarPlato(const char *codPlat){
 bool buscarCliente(int dni){
     Cliente reg;
     int pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getDNI()==dni){
             return true;
         }
@@ -126,7 +133,7 @@ bool buscarCliente(int dni){
 bool buscarClienteContra(const char *contrasenia){
     Cliente reg;
     int pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(strcmp(reg.getContrasenia(),contrasenia)==0){
             return true;
         }
@@ -138,7 +145,7 @@ bool buscarClienteContra(const char *contrasenia){
 bool buscarEmpleado(int dniEmp){
     Empleado reg;
     int pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getDNI()==dniEmp){
             return true;
         }
@@ -150,7 +157,7 @@ bool buscarEmpleado(int dniEmp){
 bool buscarEmpleadoContra(const char *contrasenia){
     Empleado reg;
     int pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(strcmp(reg.getContrasenia(),contrasenia)==0){
             return true;
         }
@@ -165,7 +172,7 @@ bool buscarEmpleadoContra(const char *contrasenia){
 bool buscarAdmin(int dni){
     Admin reg;
     int pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getDNI()==dni){
             return true;
         }
@@ -177,23 +184,9 @@ bool buscarAdmin(int dni){
 bool buscarAdminContra(const char *contrasenia){
     Admin reg;
     int pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(strcmp(reg.getContrasenia(),contrasenia)==0){
             return true;
-        }
-        pos++;
-    }
-    return false;
-}
-
-bool buscarTipo(int dni,const char *contrasenia){
-    Admin reg;
-    int pos=0;
-    while(reg.leerDeDisco(pos)){
-        if(reg.getDNI()==dni && strcmp(reg.getContrasenia(),contrasenia)==0){
-            if(reg.getTipo()==1){
-                return true;
-            }
         }
         pos++;
     }
@@ -203,7 +196,7 @@ bool buscarTipo(int dni,const char *contrasenia){
 void crearEmpleado(){
     system("cls");
     Empleado reg;
-    int pos=0,tipo=2,dni;
+    int pos=0,dni;
     bool existeEmpleado=false;
     cout<<"**************************"<<endl;
     cout<<"*   REGISTRAR EMPLEADO   *"<<endl;
@@ -213,20 +206,223 @@ void crearEmpleado(){
     if(dni==0){
         return;
     }
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getDNI()==dni){
             existeEmpleado=true;
         }
         pos++;
     }
     if(existeEmpleado==false){
-        reg.Cargar(tipo);
         reg.setDNI(dni);
+        reg.CargarEmpleado();
         reg.grabarEnDisco();
     }
     else{
         cout<<"EL EMPLEADO YA EXISTE."<<endl;
         system("pause");
+    }
+}
+
+void modificarDatosCliente(int dniCliente){
+    Cliente reg;
+    VentaCabecera aux;
+    int opc,pos,dniNuevo,dniExtra;
+    char nombre[30],apellido[30],contrasenia[9],telefono[15];
+    while(true){
+        system("cls");
+        pos=0;
+        cout<<"*************************************"<<endl;
+        cout<<"*    MODIFICAR DATOS DEL CLIENTE    *"<<endl;
+        cout<<"*************************************"<<endl<<endl;
+        cout<<"------------------------------"<<endl;
+        cout<<"1) MODIFICAR DNI"<<endl;
+        cout<<"2) MODIFICAR NOMBRE"<<endl;
+        cout<<"3) MODIFICAR APELLIDO"<<endl;
+        cout<<"4) MODIFICAR CONTRASEÑA"<<endl;
+        cout<<"5) MODIFICAR TELÉFONO"<<endl;
+        cout<<"------------------------------"<<endl;
+        cout<<"OPCIÓN: -> ";
+        cin>>opc;
+        switch(opc){
+            case 1: cout<<endl;
+                    cout<<"NUÉVO DNI: ";
+                    cin>>dniNuevo;
+                    while(aux.leerDeDisco(pos)==1){
+                        if(aux.getDNICliente()==dniCliente){
+                            aux.setDNICliente(dniNuevo);
+                            aux.modificarEnDisco(pos);
+                        }
+                        pos++;
+                    }
+                    pos=0;
+                    while(reg.leerDeDisco(pos)==1){
+                        if(reg.getDNI()==dniCliente){
+                            dniExtra=reg.getDNI();
+                            reg.setDNI(dniNuevo);
+                            reg.modificarEnDisco(pos);
+                        }
+                        pos++;
+                    }
+                    cout<<endl;
+                    cout<<"<<<DNI ACTUALIZADO>>>"<<endl;
+                    system("pause");
+                break;
+            case 2: cout<<endl;
+                    cout<<"NUÉVO NOMBRE: ";
+                    cargarCadena(nombre,29);
+                    while(reg.leerDeDisco(pos)==1){
+                        if(reg.getDNI()==dniCliente || reg.getDNI()==dniExtra){
+                            reg.setNombre(nombre);
+                            reg.modificarEnDisco(pos);
+                        }
+                        pos++;
+                    }
+                    cout<<endl;
+                    cout<<"<<<NOMBRE ACTUALIZADO>>>"<<endl;
+                    system("pause");
+                break;
+            case 3: cout<<endl;
+                    cout<<"NUÉVO APELLIDO: ";
+                    cargarCadena(apellido,29);
+                    while(reg.leerDeDisco(pos)==1){
+                        if(reg.getDNI()==dniCliente || reg.getDNI()==dniExtra){
+                            reg.setApellido(apellido);
+                            reg.modificarEnDisco(pos);
+                        }
+                        pos++;
+                    }
+                    cout<<endl;
+                    cout<<"<<<APELLIDO ACTUALIZADO>>>"<<endl;
+                    system("pause");
+                break;
+            case 4: cout<<endl;
+                    cout<<"NUÉVA CONTRASEÑA: ";
+                    cargarCadena(contrasenia,8);
+                    while(reg.leerDeDisco(pos)==1){
+                        if(reg.getDNI()==dniCliente || reg.getDNI()==dniExtra){
+                            reg.setContrasenia(contrasenia);
+                            reg.modificarEnDisco(pos);
+                        }
+                        pos++;
+                    }
+                    cout<<endl;
+                    cout<<"<<<CONTRASEÑA ACTUALIZADO>>>"<<endl;
+                    system("pause");
+                break;
+            case 5: cout<<endl;
+                    cout<<"NUÉVO NÚMERO DE TELÉFONO (CARACTERES): ";
+                    cargarCadena(telefono,14);
+                    while(reg.leerDeDisco(pos)==1){
+                        if(reg.getDNI()==dniCliente || reg.getDNI()==dniExtra){
+                            reg.setTelefono(telefono);
+                            reg.modificarEnDisco(pos);
+                        }
+                        pos++;
+                    }
+                    cout<<endl;
+                    cout<<"<<<TELÉFONO ACTUALIZADO>>>"<<endl;
+                    system("pause");
+                break;
+            case 0: return;
+                break;
+            default: cout<<"OPCION INCORRECTA"<<endl;
+                    system("pause");
+                break;
+        }
+    }
+}
+
+void modificarDatosEmpleado(int dniEmpleado){
+    Empleado reg;
+    VentaCabecera aux;
+    int opc,pos,dniNuevo,dniExtra;
+    char nombre[30],apellido[30],contrasenia[9];
+    while(true){
+        system("cls");
+        pos=0;
+        cout<<"**************************************"<<endl;
+        cout<<"*    MODIFICAR DATOS DEL EMPLEADO    *"<<endl;
+        cout<<"**************************************"<<endl<<endl;
+        cout<<"------------------------------"<<endl;
+        cout<<"1) MODIFICAR DNI"<<endl;
+        cout<<"2) MODIFICAR NOMBRE"<<endl;
+        cout<<"3) MODIFICAR APELLIDO"<<endl;
+        cout<<"4) MODIFICAR CONTRASEÑA"<<endl;
+        cout<<"------------------------------"<<endl;
+        cout<<"OPCIÓN: -> ";
+        cin>>opc;
+        switch(opc){
+            case 1: cout<<endl;
+                    cout<<"NUÉVO DNI: ";
+                    cin>>dniNuevo;
+                    while(aux.leerDeDisco(pos)==1){
+                        if(aux.getDNIEmpleado()==dniEmpleado){
+                            aux.setDNIEmpleado(dniNuevo);
+                            aux.modificarEnDisco(pos);
+                        }
+                        pos++;
+                    }
+                    pos=0;
+                    while(reg.leerDeDisco(pos)==1){
+                        if(reg.getDNI()==dniEmpleado){
+                            dniExtra=reg.getDNI();
+                            reg.setDNI(dniNuevo);
+                            reg.modificarEnDisco(pos);
+                        }
+                        pos++;
+                    }
+                    cout<<endl;
+                    cout<<"<<<DNI ACTUALIZADO>>>"<<endl;
+                    system("pause");
+                break;
+            case 2: cout<<endl;
+                    cout<<"NUÉVO NOMBRE: ";
+                    cargarCadena(nombre,29);
+                    while(reg.leerDeDisco(pos)==1){
+                        if(reg.getDNI()==dniEmpleado || reg.getDNI()==dniExtra){
+                            reg.setNombre(nombre);
+                            reg.modificarEnDisco(pos);
+                        }
+                        pos++;
+                    }
+                    cout<<endl;
+                    cout<<"<<<NOMBRE ACTUALIZADO>>>"<<endl;
+                    system("pause");
+                break;
+            case 3: cout<<endl;
+                    cout<<"NUÉVO APELLIDO: ";
+                    cargarCadena(apellido,29);
+                    while(reg.leerDeDisco(pos)==1){
+                        if(reg.getDNI()==dniEmpleado || reg.getDNI()==dniExtra){
+                            reg.setApellido(apellido);
+                            reg.modificarEnDisco(pos);
+                        }
+                        pos++;
+                    }
+                    cout<<endl;
+                    cout<<"<<<APELLIDO ACTUALIZADO>>>"<<endl;
+                    system("pause");
+                break;
+            case 4: cout<<endl;
+                    cout<<"NUÉVA CONTRASEÑA: ";
+                    cargarCadena(contrasenia,8);
+                    while(reg.leerDeDisco(pos)==1){
+                        if(reg.getDNI()==dniEmpleado || reg.getDNI()==dniExtra){
+                            reg.setContrasenia(contrasenia);
+                            reg.modificarEnDisco(pos);
+                        }
+                        pos++;
+                    }
+                    cout<<endl;
+                    cout<<"<<<CONTRASEÑA ACTUALIZADO>>>"<<endl;
+                    system("pause");
+                break;
+            case 0: return;
+                break;
+            default: cout<<"OPCION INCORRECTA"<<endl;
+                    system("pause");
+                break;
+        }
     }
 }
 ///
@@ -275,7 +471,7 @@ void mostrarPorCodigo(){
     cout<<endl;
     existePlato=buscarPlato(codPlat);
     if(existePlato==true){
-        while(reg.leerDeDisco(pos)){
+        while(reg.leerDeDisco(pos)==1){
             if(strcmp(reg.getCodigoPlato(),codPlat)==0){
                 if(reg.getEstado()==1){
                     reg.Mostrar();
@@ -299,7 +495,7 @@ void mostrarPlatos(){
     cout<<"*                          *"<<endl;
     cout<<"****************************"<<endl<<endl;
     cout<<"----------------------------------"<<endl;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getEstado()==1){
             reg.Mostrar();
             cout<<"----------------------------------"<<endl;
@@ -322,7 +518,7 @@ void agregarStock(){
             cout<<"*       AGREGAR STOCK       *"<<endl;
             cout<<"*                           *"<<endl;
             cout<<"*****************************"<<endl<<endl;
-            while(reg.leerDeDisco(pos)){
+            while(reg.leerDeDisco(pos)==1){
                 if(reg.getEstado()==true){
                     reg.Mostrar();
                     cout<<"----------------------------------"<<endl;
@@ -342,7 +538,7 @@ void agregarStock(){
                     cout<<"CANTIDAD: ";
                     cin>>cantidad;
                 }
-                while(reg.leerDeDisco(pos)){
+                while(reg.leerDeDisco(pos)==1){
                     if(strcmp(reg.getCodigoPlato(),codPlat)==0){
                         totalCantidad=reg.getStock()+cantidad;
                         reg.setStock(totalCantidad);
@@ -386,7 +582,7 @@ void modificarNombre(){
     cout<<"*      MODIFICAR NOMBRE      *"<<endl;
     cout<<"*                            *"<<endl;
     cout<<"******************************"<<endl<<endl;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         reg.Mostrar();
         cout<<"----------------------------------"<<endl;
         pos++;
@@ -411,7 +607,7 @@ void modificarNombre(){
 void cambiarNombre(const char *codPlat,const char *nuevoNombre){
     Plato reg;
     int pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(strcmp(reg.getCodigoPlato(),codPlat)==0){
             reg.setNombre(nuevoNombre);
             reg.modificarEnDisco(pos);
@@ -431,7 +627,7 @@ void modificarDescripcion(){
     cout<<"*    MODIFICAR DESCRIPCIÓN    *"<<endl;
     cout<<"*                             *"<<endl;
     cout<<"*******************************"<<endl<<endl;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         reg.Mostrar();
         cout<<"----------------------------------"<<endl;
         pos++;
@@ -456,9 +652,100 @@ void modificarDescripcion(){
 void cambiarDescripcion(const char *codPlat,const char *nuevaDescrip){
     Plato reg;
     int pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(strcmp(reg.getCodigoPlato(),codPlat)==0){
             reg.setDescripcion(nuevaDescrip);
+            reg.modificarEnDisco(pos);
+        }
+        pos++;
+    }
+}
+
+void modificarPrecio(){
+    system("cls");
+    Plato reg;
+    int pos=0;
+    float nuevoPrecio;
+    char codPlat[6];
+    bool existePlato;
+    cout<<"********************************"<<endl;
+    cout<<"*                              *"<<endl;
+    cout<<"*       MODIFICAR PRECIO       *"<<endl;
+    cout<<"*                              *"<<endl;
+    cout<<"********************************"<<endl<<endl;
+    while(reg.leerDeDisco(pos)==1){
+        reg.Mostrar();
+        cout<<"----------------------------------"<<endl;
+        pos++;
+    }
+    cout<<"CÓDIGO DE PLATO: ";
+    cargarCadena(codPlat,5);
+    existePlato=buscarPlato(codPlat);
+    if(existePlato==true){
+        cout<<"NUÉVO PRECIO: ";
+        cin>>nuevoPrecio;
+        cambiarPrecio(codPlat,nuevoPrecio);
+        cout<<endl;
+        cout<<"<<<PRECIO ACTUALIZADO>>>"<<endl;
+        system("pause");
+    }
+    else{
+        cout<<"EL PLATO NO EXISTE O EL CÓDIGO NO ES CORRECTO."<<endl;
+        system("pause");
+    }
+}
+
+void cambiarPrecio(const char *codPlat,float nuevoPrecio){
+    Plato reg;
+    int pos=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(strcmp(reg.getCodigoPlato(),codPlat)==0){
+            reg.setPrecio(nuevoPrecio);
+            reg.modificarEnDisco(pos);
+        }
+        pos++;
+    }
+}
+
+void modificarStock(){
+    system("cls");
+    Plato reg;
+    int pos=0,nuevoStock;
+    char codPlat[6];
+    bool existePlato;
+    cout<<"*********************************"<<endl;
+    cout<<"*                               *"<<endl;
+    cout<<"*        MODIFICAR STOCK        *"<<endl;
+    cout<<"*                               *"<<endl;
+    cout<<"*********************************"<<endl<<endl;
+    while(reg.leerDeDisco(pos)==1){
+        reg.Mostrar();
+        cout<<"----------------------------------"<<endl;
+        pos++;
+    }
+    cout<<"CÓDIGO DE PLATO: ";
+    cargarCadena(codPlat,5);
+    existePlato=buscarPlato(codPlat);
+    if(existePlato==true){
+        cout<<"NUÉVA CANTIDAD DE STOCK: ";
+        cin>>nuevoStock;
+        cambiarStock(codPlat,nuevoStock);
+        cout<<endl;
+        cout<<"<<<STOCK ACTUALIZADO>>>"<<endl;
+        system("pause");
+    }
+    else{
+        cout<<"EL PLATO NO EXISTE O EL CÓDIGO NO ES CORRECTO."<<endl;
+        system("pause");
+    }
+}
+
+void cambiarStock(const char *codPlat,int nuevoStock){
+    Plato reg;
+    int pos=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(strcmp(reg.getCodigoPlato(),codPlat)==0){
+            reg.setStock(nuevoStock);
             reg.modificarEnDisco(pos);
         }
         pos++;
@@ -476,7 +763,7 @@ void eliminarPlato(){
     cout<<"*      ELIMINAR PLATO      *"<<endl;
     cout<<"*                          *"<<endl;
     cout<<"****************************"<<endl<<endl;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getEstado()==true){
             reg.Mostrar();
             cout<<"----------------------------------"<<endl;
@@ -490,7 +777,7 @@ void eliminarPlato(){
         existePlato=buscarPlato(codPlat);
         if(existePlato==true){
             pos=0;
-            while(reg.leerDeDisco(pos)){
+            while(reg.leerDeDisco(pos)==1){
                 if(strcmp(reg.getCodigoPlato(),codPlat)==0 && reg.getEstado()==1){
                     reg.setEstado(0);
                     reg.modificarEnDisco(pos);
@@ -522,7 +809,7 @@ void restablecerPlato(){
     cout<<"*     RESTABLECER PLATO     *"<<endl;
     cout<<"*                           *"<<endl;
     cout<<"*****************************"<<endl<<endl;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getEstado()==false){
             reg.Mostrar();
             cout<<"----------------------------------"<<endl;
@@ -536,7 +823,7 @@ void restablecerPlato(){
         existePlato=buscarPlato(codPlat);
         if(existePlato==true){
             pos=0;
-            while(reg.leerDeDisco(pos)){
+            while(reg.leerDeDisco(pos)==1){
                 if(strcmp(reg.getCodigoPlato(),codPlat)==0 && reg.getEstado()==0){
                     reg.setEstado(1);
                     reg.modificarEnDisco(pos);
@@ -569,9 +856,9 @@ void mostrarEmpleadosRegistrados(){
     cout<<"*   EMPLEADOS REGISTRADOS   *"<<endl;
     cout<<"*                           *"<<endl;
     cout<<"*****************************"<<endl<<endl;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getEstado()==true){
-            reg.Mostrar();
+            reg.MostrarEmpleado();
             cout<<"----------------------------------"<<endl;
         }
         pos++;
@@ -588,9 +875,9 @@ void mostrarClientesRegistrados(){
     cout<<"*    CLIENTES REGISTRADOS    *"<<endl;
     cout<<"*                            *"<<endl;
     cout<<"******************************"<<endl<<endl;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getEstado()==true){
-            reg.Mostrar();
+            reg.MostrarCliente();
             cout<<"----------------------------------"<<endl;
         }
         pos++;
@@ -608,7 +895,7 @@ void reportes(){
 void registrarCliente(){
     system("cls");
     Cliente reg;
-    int dni,tipo=3;
+    int dni;
     bool existeCliente;
     cout<<"*****************************"<<endl;
     cout<<"*                           *"<<endl;
@@ -617,10 +904,13 @@ void registrarCliente(){
     cout<<"*****************************"<<endl<<endl;
     cout<<"DNI DEL CLIENTE: ";
     cin>>dni;
+    if(dni==0){
+        return;
+    }
     existeCliente=buscarCliente(dni);
     if(existeCliente==false){
         reg.setDNI(dni);
-        reg.Cargar(tipo);
+        reg.CargarCliente();
         reg.grabarEnDisco();
         cout<<endl;
         cout<<"<<<CLIENTE REGISTRADO>>>"<<endl;
@@ -632,7 +922,7 @@ void registrarCliente(){
 void crearPedido(int dniCliente){
     VentaCabecera reg;
     VentaDetalle aux;
-    int idventa=0,otroPedido=1,opc,cantidad,numeroGrande;
+    int idventa,otroPedido=1,opc,cantidad,numeroGrande,iddetalle;
     char codPlat[6];
     float importe;
     bool repetir=false,pedido=true,existePlato,sacarStock;
@@ -643,10 +933,11 @@ void crearPedido(int dniCliente){
         cout<<"*        CREAR PEDIDO        *"<<endl;
         cout<<"*                            *"<<endl;
         cout<<"******************************"<<endl<<endl;
+        idventa=generarIDVenta();
         sacarStock=false;
         if(repetir==false){
-            idventa=generarIDVenta();
-            reg.Cargar(idventa,dniCliente);
+            iddetalle=generarIDDetalle();
+            reg.Cargar(idventa,iddetalle,dniCliente);
             cout<<endl;
             while(pedido==true){
                 system("cls");
@@ -688,7 +979,6 @@ void crearPedido(int dniCliente){
             }
         }
         else{
-            idventa+=1;
             pedido=true;
             while(pedido==true){
                 system("cls");
@@ -751,17 +1041,27 @@ void crearPedido(int dniCliente){
 int generarIDVenta(){
     VentaCabecera reg;
     int pos=0,idventa=1;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         idventa++;
         pos++;
     }
     return idventa;
 }
 
+int generarIDDetalle(){
+    VentaCabecera reg;
+    int pos=0,iddetalle=1;
+    while(reg.leerDeDisco(pos)==1){
+        iddetalle++;
+        pos++;
+    }
+    return iddetalle;
+}
+
 void traerPlato(){
     Plato reg;
     int pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getEstado()==1){
             reg.Mostrar();
             cout<<"----------------------------------"<<endl;
@@ -773,23 +1073,21 @@ void traerPlato(){
 int chequearStock(const char *codPlat,int cantidad){
     Plato reg;
     int pos=0,restarCant;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(strcmp(reg.getCodigoPlato(),codPlat)==0){
-            cout<<reg.getStock()<<endl;
-            cout<<cantidad<<endl;
             restarCant=reg.getStock()-cantidad;
-            cout<<restarCant<<endl;
             return restarCant;
         }
         pos++;
     }
+    return -1;
 }
 
 float importePlato(const char *codPlat,int cantidad){
     Plato reg;
     int pos=0;
     float importe;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(strcmp(reg.getCodigoPlato(),codPlat)==0){
             importe=reg.getPrecio()*cantidad;
         }
@@ -801,7 +1099,7 @@ float importePlato(const char *codPlat,int cantidad){
 void disminuirStock(const char *codPlat,int cantidad){
     Plato reg;
     int pos=0,totalStock;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(strcmp(reg.getCodigoPlato(),codPlat)==0){
             totalStock=reg.getStock()-cantidad;
             reg.setStock(totalStock);
@@ -822,7 +1120,7 @@ void cancelarPedido(int dni){
         cout<<"*       CANCELAR PEDIDO       *"<<endl;
         cout<<"*                             *"<<endl;
         cout<<"*******************************"<<endl<<endl;
-        while(reg.leerDeDisco(pos)){
+        while(reg.leerDeDisco(pos)==1){
             if(reg.getDNICliente()==dni){
                 reg.Mostrar();
                 cout<<"----------------------------------"<<endl;
@@ -843,7 +1141,7 @@ void cancelarPedido(int dni){
                 return;
             }
             pos=0;
-            while(reg.leerDeDisco(pos)){
+            while(reg.leerDeDisco(pos)==1){
                 if(reg.getIDVenta()==idventa){
                     reg.setDNIEmpleado(-1);
                     reg.modificarEnDisco(pos);
@@ -903,7 +1201,7 @@ void mostrarPedido(int dni){
     VentaCabecera reg;
     int pos=0;
     float acumPrecio=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getDNICliente()==dni){
             reg.Mostrar();
             cout<<"----------------------------------"<<endl;
@@ -911,7 +1209,7 @@ void mostrarPedido(int dni){
         pos++;
     }
     pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getDNICliente()==dni){
             acumPrecio+=reg.getImporte();
         }
@@ -934,7 +1232,7 @@ void mostrarVentas(){
     cout<<"*        MOSTRAR VENTAS        *"<<endl;
     cout<<"*                              *"<<endl;
     cout<<"********************************"<<endl<<endl;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getEstado()==true){
             sinAtender=clienteNoAtendido(reg.getIDVenta());
             if(sinAtender==true){
@@ -956,7 +1254,7 @@ void mostrarVentas(){
 bool clienteNoAtendido(int idventa){
     VentaCabecera reg;
     int pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getIDVenta()==idventa){
             if(reg.getDNIEmpleado()==0){
                 return true;
@@ -970,12 +1268,13 @@ bool clienteNoAtendido(int idventa){
 int traerCliente(int idventa){
     VentaCabecera reg;
     int pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getIDVenta()==idventa){
             return reg.getDNICliente();
         }
         pos++;
     }
+    return -1;
 }
 
 void atenderCliente(int dniEmp){
@@ -983,7 +1282,7 @@ void atenderCliente(int dniEmp){
     VentaDetalle reg;
     int pos=0,dniCliente,noHayRegistros=0;
     bool noAtendido,existeCliente;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         noAtendido=clienteNoAtendido(reg.getIDVenta());
         if(noAtendido==true){
             reg.Mostrar();
@@ -1013,7 +1312,7 @@ void atenderCliente(int dniEmp){
 void atenderAlCliente(int dniCliente,int dniEmp){
     VentaCabecera reg;
     int pos=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getDNICliente()==dniCliente){
             reg.setDNIEmpleado(dniEmp);
             reg.modificarEnDisco(pos);
@@ -1033,7 +1332,7 @@ void cobrarVentas(int dniEmp){
     cout<<"*                               *"<<endl;
     cout<<"*********************************"<<endl<<endl;
     cout<<"----------------------------------"<<endl;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getEstado()==true){
             reg.Mostrar();
             cout<<"----------------------------------"<<endl;
@@ -1050,7 +1349,7 @@ void cobrarVentas(int dniEmp){
             return;
         }
         pos=0;
-        while(reg.leerDeDisco(pos)){
+        while(reg.leerDeDisco(pos)==1){
             if(reg.getIDVenta()==idDeVenta){
                 reg.setEstado(false);
                 reg.modificarEnDisco(pos);
@@ -1070,7 +1369,7 @@ int buscarVenta(int dniCliente,int dniEmp){
     system("cls");
     VentaCabecera reg;
     int pos=0,idventa,cantReg=0;
-    while(reg.leerDeDisco(pos)){
+    while(reg.leerDeDisco(pos)==1){
         if(reg.getDNICliente()==dniCliente){
             if(reg.getDNIEmpleado()==dniEmp){
                 reg.Mostrar();
@@ -1089,7 +1388,7 @@ int buscarVenta(int dniCliente,int dniEmp){
         cout<<"ESCOJA EL ID DE VENTA A COBRAR: ";
         cin>>idventa;
         pos=0;
-        while(reg.leerDeDisco(pos)){
+        while(reg.leerDeDisco(pos)==1){
             if(reg.getIDVenta()==idventa){
                 reg.setDNIEmpleado(-2);
                 reg.modificarEnDisco(pos);
@@ -1098,6 +1397,7 @@ int buscarVenta(int dniCliente,int dniEmp){
             pos++;
         }
     }
+    return -1;
 }
 
 void mostrarVentasCobradas(){
@@ -1111,9 +1411,9 @@ void mostrarVentasCobradas(){
     cout<<"*                               *"<<endl;
     cout<<"*********************************"<<endl<<endl;
     cout<<"----------------------------------"<<endl;
-    while(reg.leerDeDisco(pos1)){
+    while(reg.leerDeDisco(pos1)==1){
         if(reg.getEstado()==false){
-            while(aux.leerDeDisco(pos2)){
+            while(aux.leerDeDisco(pos2)==1){
                 if(aux.getDNIEmpleado()==-2){
                     reg.Mostrar();
                     cout<<"----------------------------------"<<endl;

@@ -4,24 +4,27 @@
 class VentaCabecera{
     private:
         int IDVenta;
+        int IDDetalle;
         int DNICliente;
         int DNIEmpleado;
         Fecha fecha;
         float importe;
     public:
         int getIDVenta(){return IDVenta;}
+        int getIDDetalle(){return IDDetalle;}
         int getDNICliente(){return DNICliente;}
         int getDNIEmpleado(){return DNIEmpleado;}
         Fecha getFecha(){return fecha;}
         float getImporte(){return importe;}
 
         void setIDVenta(int idv){IDVenta=idv;}
+        void setIDDetalle(int idd){IDDetalle=idd;}
         void setDNICliente(int dnic){DNICliente=dnic;}
         void setDNIEmpleado(int dnie){DNIEmpleado=dnie;}
         void setFecha(Fecha f){fecha=f;}
         void setImporte(float i){importe=i;}
 
-        void Cargar(int,int);
+        void Cargar(int,int,int);
         void Mostrar();
 
         int grabarEnDisco();
@@ -29,10 +32,13 @@ class VentaCabecera{
         int leerDeDisco(int);
 };
 
-void VentaCabecera::Cargar(int idv,int dni){
+void VentaCabecera::Cargar(int idv,int idd,int dni){
     cout<<"ID DE VENTA: ";
     IDVenta=idv;
     cout<<IDVenta<<endl;
+    cout<<"ID DE DETALLE: ";
+    IDDetalle=idd;
+    cout<<IDDetalle<<endl;
     cout<<"DNI DEL CLIENTE: ";
     DNICliente=dni;
     cout<<DNICliente<<endl;
@@ -45,6 +51,7 @@ void VentaCabecera::Cargar(int idv,int dni){
 
 void VentaCabecera::Mostrar(){
     cout<<"ID DE VENTA: "<<IDVenta<<endl;
+    cout<<"ID DE DETALLE: "<<IDDetalle<<endl;
     cout<<"DNI DEL CLIENTE: "<<DNICliente<<endl;
     cout<<"DNI DEL EMPLEADO: "<<DNIEmpleado<<endl;
     cout<<"FECHA: ";

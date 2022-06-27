@@ -16,21 +16,19 @@ class VentaDetalle{
     private:
         char IDPlato[6];
         int IDVenta;
-        int dniCliente;
+        int IDDetalle;
         int cantidad;
         float importe;
         bool estado;
     public:
         const char *getIDPlato(){return IDPlato;}
         int getIDVenta(){return IDVenta;}
-        int getDNIcliente(){return dniCliente;}
         int getCantidad(){return cantidad;}
         float getImporte(){return importe;}
         bool getEstado(){return estado;}
 
         void setIDPlato(const char *idp){strcpy(IDPlato,idp);}
         void setIDVenta(int idv){IDVenta=idv;}
-        void setDNIcliente(int dnic){dniCliente=dnic;}
         void setCantidad(int c){cantidad=c;}
         void setImporte(float i){importe=i;}
         void setEstado(bool e){estado=e;}
@@ -43,9 +41,9 @@ class VentaDetalle{
         int leerDeDisco(int);
 };
 
-void VentaDetalle::Cargar(int idv,int dnicl,const char *codPlat,int cant,float imp){
+void VentaDetalle::Cargar(int idv,int idd,const char *codPlat,int cant,float imp){
     IDVenta=idv;
-    dniCliente=dnicl;
+    IDDetalle=idd;
     strcpy(IDPlato,codPlat);
     cantidad=cant;
     importe=imp;
@@ -54,7 +52,7 @@ void VentaDetalle::Cargar(int idv,int dnicl,const char *codPlat,int cant,float i
 
 void VentaDetalle::Mostrar(){
     cout<<"ID DE VENTA: "<<IDVenta<<endl;
-    cout<<"DNI DEL CLIENTE: "<<dniCliente<<endl;
+    cout<<"ID DE DETALLE: "<<IDDetalle<<endl;
     cout<<"ID DE PLATO: "<<IDPlato<<endl;
     cout<<"CANTIDAD: "<<cantidad<<endl;
     cout<<"IMPORTE: $"<<importe<<endl;
