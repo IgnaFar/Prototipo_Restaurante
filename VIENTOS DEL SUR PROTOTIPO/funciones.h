@@ -65,6 +65,7 @@ void mostrarEmpleadosRegistrados();
 void mostrarClientesRegistrados();
 
 void reportes();
+void importeTotalRecaudado();
 ///
 
 
@@ -96,10 +97,11 @@ void mostrarVentas();
 bool clienteNoAtendido(int);
 int traerCliente(int);
 void atenderCliente(int);
+bool buscarIDDetalle(int);
 void atenderAlCliente(int,int);
 
 void cobrarVentas(int);
-int buscarVenta(int,int);
+void buscarVenta(int,int);
 
 void mostrarVentasCobradas();
 ///
@@ -886,7 +888,47 @@ void mostrarClientesRegistrados(){
 }
 
 void reportes(){
+    int opc;
+    while(true){
+        system("cls");
+        cout<<"*******************************"<<endl;
+        cout<<"*                             *"<<endl;
+        cout<<"*        MENÚ REPORTES        *"<<endl;
+        cout<<"*                             *"<<endl;
+        cout<<"*******************************"<<endl<<endl;
+        cout<<"----------------------------------"<<endl;
+        cout<<"1) IMPORTE TOTAL RECAUDADO"<<endl;
+        cout<<"0) VOLVER"<<endl;
+        cout<<"----------------------------------"<<endl;
+        cout<<"OPCIÓN: -> ";
+        cin>>opc;
+        switch(opc){
+            case 1: importeTotalRecaudado();
+                break;
+            case 0: return;
+                break;
+            default: cout<<"OPCION INCORRECTA"<<endl;
+                    system("pause");
+                break;
+        }
+    }
+}
 
+void importeTotalRecaudado(){
+    VentaCabecera reg;
+    int pos=0;
+    float acumImporte=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getDNIEmpleado()==-2){
+            acumImporte+=reg.getImporte();
+        }
+        pos++;
+    }
+    cout<<endl;
+    cout<<"**************************************"<<endl;
+    cout<<"       IMPORTE TOTAL: $"<<acumImporte<<endl;
+    cout<<"**************************************"<<endl;
+    system("pause");
 }
 ///
 
@@ -964,7 +1006,7 @@ void crearPedido(int dniCliente){
                                 reg.setImporte(importe);
                                 reg.grabarEnDisco();
                                 disminuirStock(codPlat,cantidad);
-                                aux.Cargar(idventa,dniCliente,codPlat,cantidad,importe);
+                                aux.Cargar(idventa,iddetalle,codPlat,cantidad,importe);
                                 aux.grabarEnDisco();
                                 repetir=true;
                                 sacarStock=true;
@@ -1010,7 +1052,6 @@ void crearPedido(int dniCliente){
                                 aux.grabarEnDisco();
                                 pedido=false;
                                 sacarStock=true;
-
                             }
                         }
                     }
@@ -1112,9 +1153,10 @@ void disminuirStock(const char *codPlat,int cantidad){
 void cancelarPedido(int dni){
     system("cls");
     VentaCabecera reg;
-    int pos=0,idventa,opc,leerRegistro=0;
-    bool cancelarOtro=true;
+    int pos=0,idventa,opc;
+    bool cancelarOtro=true,cantReg;
     while(cancelarOtro==true){
+        cantReg=false;
         cout<<"*******************************"<<endl;
         cout<<"*                             *"<<endl;
         cout<<"*       CANCELAR PEDIDO       *"<<endl;
@@ -1124,12 +1166,12 @@ void cancelarPedido(int dni){
             if(reg.getDNICliente()==dni){
                 reg.Mostrar();
                 cout<<"----------------------------------"<<endl;
-                leerRegistro++;
+                cantReg=true;
                 pos++;
             }
             pos++;
         }
-        if(leerRegistro==0){
+        if(cantReg==false){
             cout<<"EL CLIENTE NO TIENE NINGÚN PEDIDO."<<endl;
             return;
         }
@@ -1226,7 +1268,7 @@ void mostrarVentas(){
     system("cls");
     VentaDetalle reg;
     int pos=0,noAtendido;
-    bool sinAtender;
+    bool sinAtender,cantReg=false;
     cout<<"********************************"<<endl;
     cout<<"*                              *"<<endl;
     cout<<"*        MOSTRAR VENTAS        *"<<endl;
@@ -1237,17 +1279,19 @@ void mostrarVentas(){
             sinAtender=clienteNoAtendido(reg.getIDVenta());
             if(sinAtender==true){
                 noAtendido=traerCliente(reg.getIDVenta());
-                cout<<"EL CLIENTE "<<noAtendido<<" NO ESTÁ ATENDIDO."<<endl;
+                cout<<"EL CLIENTE CON DNI "<<noAtendido<<" NO ESTÁ ATENDIDO."<<endl;
                 cout<<"----------------------------------"<<endl;
+                cantReg=true;
             }
             else{
                 reg.Mostrar();
                 cout<<"----------------------------------"<<endl;
-
+                cantReg=true;
             }
         }
         pos++;
     }
+    if(cantReg==false) cout<<"NO SE HAN REGISTRADO VENTAS AÚN."<<endl;
     system("pause");
 }
 
@@ -1280,40 +1324,49 @@ int traerCliente(int idventa){
 void atenderCliente(int dniEmp){
     system("cls");
     VentaDetalle reg;
-    int pos=0,dniCliente,noHayRegistros=0;
-    bool noAtendido,existeCliente;
+    int pos=0,iddetalle;
+    bool noAtendido,existeDetalle,cantReg=false;
+    cout<<"*********************************"<<endl;
+    cout<<"*                               *"<<endl;
+    cout<<"*        ATENDER CLIENTE        *"<<endl;
+    cout<<"*                               *"<<endl;
+    cout<<"*********************************"<<endl<<endl;
     while(reg.leerDeDisco(pos)==1){
         noAtendido=clienteNoAtendido(reg.getIDVenta());
         if(noAtendido==true){
             reg.Mostrar();
             cout<<"----------------------------------"<<endl;
-            noHayRegistros++;
+            cantReg=true;
         }
         pos++;
     }
-    if(noHayRegistros==0){
+    if(cantReg==false){
         cout<<"NO HAY VENTAS REGISTRADAS AÚN."<<endl;
         system("pause");
     }
     else{
-        cout<<"DNI DEL CLIENTE A ATENDER: ";
-        cin>>dniCliente;
-        existeCliente=buscarCliente(dniCliente);
-        if(existeCliente==true){
-            atenderAlCliente(dniCliente,dniEmp);
+        cout<<"ID DE DETALLE A ATENDER: ";
+        cin>>iddetalle;
+        if(iddetalle==0){
+            return;
+        }
+        existeDetalle=buscarIDDetalle(iddetalle);
+        if(existeDetalle==true){
+            atenderAlCliente(iddetalle,dniEmp);
         }
         else{
-            cout<<"EL CLIENTE NO EXISTE O NO ESTA REGISTRADO."<<endl;
+            cout<<endl;
+            cout<<"LA VENTA NO EXISTE O EL ID NO ES CORRECTO."<<endl;
             system("pause");
         }
     }
 }
 
-void atenderAlCliente(int dniCliente,int dniEmp){
+void atenderAlCliente(int iddetalle,int dniEmp){
     VentaCabecera reg;
     int pos=0;
     while(reg.leerDeDisco(pos)==1){
-        if(reg.getDNICliente()==dniCliente){
+        if(reg.getIDDetalle()==iddetalle){
             reg.setDNIEmpleado(dniEmp);
             reg.modificarEnDisco(pos);
         }
@@ -1321,11 +1374,23 @@ void atenderAlCliente(int dniCliente,int dniEmp){
     }
 }
 
+bool buscarIDDetalle(int iddetalle){
+    VentaDetalle reg;
+    int pos=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getIDDetalle()==iddetalle){
+            return true;
+        }
+        pos++;
+    }
+    return false;
+}
+
 void cobrarVentas(int dniEmp){
     system("cls");
     VentaDetalle reg;
-    int pos=0,dniCliente,idDeVenta;
-    bool existeCliente;
+    int pos=0,iddetalle;
+    bool existeDetalle,noAtendido,cantReg=false;
     cout<<"*********************************"<<endl;
     cout<<"*                               *"<<endl;
     cout<<"*         COBRAR VENTAS         *"<<endl;
@@ -1334,98 +1399,82 @@ void cobrarVentas(int dniEmp){
     cout<<"----------------------------------"<<endl;
     while(reg.leerDeDisco(pos)==1){
         if(reg.getEstado()==true){
-            reg.Mostrar();
-            cout<<"----------------------------------"<<endl;
+            noAtendido=clienteNoAtendido(reg.getIDVenta());
+            if(noAtendido==true){
+                cout<<"LA VENTA CON ID DE DETALLE "<<reg.getIDDetalle()<<" NO FUE ATENDIDA."<<endl;
+                cout<<"----------------------------------"<<endl;
+            }
+            else{
+                reg.Mostrar();
+                cout<<"----------------------------------"<<endl;
+                cantReg=true;
+            }
         }
         pos++;
     }
-    cout<<"ELIJA EL DNI DEL CLIENTE A COBRAR: ";
-    cin>>dniCliente;
-    existeCliente=buscarCliente(dniCliente);
-    if(existeCliente==true){
-        cout<<endl;
-        idDeVenta=buscarVenta(dniCliente,dniEmp);
-        if(idDeVenta==-1){
-            return;
-        }
-        pos=0;
-        while(reg.leerDeDisco(pos)==1){
-            if(reg.getIDVenta()==idDeVenta){
-                reg.setEstado(false);
-                reg.modificarEnDisco(pos);
+    if(cantReg==true){
+        cout<<"ELIJA EL ID DE DETALLE A COBRAR: ";
+        cin>>iddetalle;
+        existeDetalle=buscarIDDetalle(iddetalle);
+        if(existeDetalle==true){
+            cout<<endl;
+            buscarVenta(iddetalle,dniEmp);
+            pos=0;
+            while(reg.leerDeDisco(pos)==1){
+                if(reg.getIDDetalle()==iddetalle){
+                    reg.setEstado(false);
+                    reg.modificarEnDisco(pos);
+                }
+                pos++;
             }
-            pos++;
+            cout<<"<<<LA VENTA SE COBRÓ CON ÉXITO>>>"<<endl;
+            system("pause");
         }
-        cout<<"<<<LA VENTA SE COBRÓ CON ÉXITO>>>"<<endl;
-        system("pause");
+        else{
+            cout<<"LA VENTA NO EXISTE O EL ID NO ES CORRECTO."<<endl;
+            system("pause");
+        }
     }
     else{
-        cout<<"EL CLIENTE NO EXISTE O EL DNI NO ES CORRECTO."<<endl;
+        cout<<endl;
+        cout<<"NO SE ENCONTRÓ NINGUNA VENTA O ESTA NO FUE ATENDIDA."<<endl;
         system("pause");
+        return;
     }
 }
 
-int buscarVenta(int dniCliente,int dniEmp){
-    system("cls");
+void buscarVenta(int iddetalle,int dniEmp){
     VentaCabecera reg;
-    int pos=0,idventa,cantReg=0;
+    int pos=0;
     while(reg.leerDeDisco(pos)==1){
-        if(reg.getDNICliente()==dniCliente){
-            if(reg.getDNIEmpleado()==dniEmp){
-                reg.Mostrar();
-                cout<<"----------------------------------"<<endl;
-                cantReg++;
-            }
+        if(reg.getIDDetalle()==iddetalle){
+            reg.setDNIEmpleado(-2);
+            reg.modificarEnDisco(pos);
         }
         pos++;
     }
-    if(cantReg==0){
-        cout<<"NO HAY REGISTROS O LOS CLIENTES NO ESTÁN ATENDIDOS."<<endl;
-        system("pause");
-        return -1;
-    }
-    else{
-        cout<<"ESCOJA EL ID DE VENTA A COBRAR: ";
-        cin>>idventa;
-        pos=0;
-        while(reg.leerDeDisco(pos)==1){
-            if(reg.getIDVenta()==idventa){
-                reg.setDNIEmpleado(-2);
-                reg.modificarEnDisco(pos);
-                return idventa;
-            }
-            pos++;
-        }
-    }
-    return -1;
 }
 
 void mostrarVentasCobradas(){
     system("cls");
-    VentaDetalle reg;
-    VentaCabecera aux;
-    int pos1=0,pos2=0,cantReg=0;
+    VentaCabecera reg;
+    int pos=0;
+    bool cantReg=false;
     cout<<"*********************************"<<endl;
     cout<<"*                               *"<<endl;
     cout<<"*    MOSTRAR VENTAS COBRADAS    *"<<endl;
     cout<<"*                               *"<<endl;
     cout<<"*********************************"<<endl<<endl;
     cout<<"----------------------------------"<<endl;
-    while(reg.leerDeDisco(pos1)==1){
-        if(reg.getEstado()==false){
-            while(aux.leerDeDisco(pos2)==1){
-                if(aux.getDNIEmpleado()==-2){
-                    reg.Mostrar();
-                    cout<<"----------------------------------"<<endl;
-                    cantReg++;
-                }
-                pos2++;
-            }
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getDNIEmpleado()==-2){
+            reg.Mostrar();
+            cout<<"----------------------------------"<<endl;
+            cantReg=true;
         }
-        pos1++;
-        pos2=0;
+        pos++;
     }
-    if(cantReg==0) cout<<"NO HAY VENTAS COBRADAS."<<endl;
+    if(cantReg==false) cout<<"NO HAY VENTAS COBRADAS."<<endl;
     system("pause");
 }
 ///

@@ -23,12 +23,14 @@ class VentaDetalle{
     public:
         const char *getIDPlato(){return IDPlato;}
         int getIDVenta(){return IDVenta;}
+        int getIDDetalle(){return IDDetalle;}
         int getCantidad(){return cantidad;}
         float getImporte(){return importe;}
         bool getEstado(){return estado;}
 
         void setIDPlato(const char *idp){strcpy(IDPlato,idp);}
         void setIDVenta(int idv){IDVenta=idv;}
+        void setIDDetalle(int idd){IDDetalle=idd;}
         void setCantidad(int c){cantidad=c;}
         void setImporte(float i){importe=i;}
         void setEstado(bool e){estado=e;}

@@ -17,11 +17,12 @@ int main(){
     Cliente reg;
     Empleado aux;
     Admin obj;
-    int opc,dni,pos=0;
+    int opc,dni,pos;
     char contrasenia[9];
     bool existeCliente,existeContra,existeEmpleado,existeAdmin;
     while(true){
         system("cls");
+        pos=0;
         cout<<"*****************************"<<endl;
         cout<<"*                           *"<<endl;
         cout<<"*       MENÚ CLIENTES       *"<<endl;
