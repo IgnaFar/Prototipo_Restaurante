@@ -210,10 +210,11 @@ void menuEmpleados(int dni){
         cout<<"3) ATENDER CLIENTE"<<endl;
         cout<<"4) COBRAR VENTAS"<<endl;
         cout<<"5) MOSTRAR VENTAS COBRADAS"<<endl;
-        cout<<"6) MOSTRAR CLIENTES REGISTRADOS"<<endl;
-        cout<<"7) REPORTES"<<endl;
+        cout<<"6) MOSTRAR VENTAS CANCELADAS"<<endl;
+        cout<<"7) MOSTRAR CLIENTES REGISTRADOS"<<endl;
+        cout<<"8) REPORTES"<<endl;
         cout<<"------------------------------"<<endl;
-        cout<<"8) MENÚ ADMIN"<<endl;
+        cout<<"9) MENÚ ADMIN"<<endl;
         cout<<"------------------------------"<<endl;
         cout<<"0) VOLVER"<<endl;
         cout<<"------------------------------"<<endl;
@@ -231,11 +232,13 @@ void menuEmpleados(int dni){
                 break;
             case 5: mostrarVentasCobradas();
                 break;
-            case 6: mostrarClientesRegistrados();
+            case 6: mostrarVentasCanceladas();
                 break;
-            case 7: reportes();
+            case 7: mostrarClientesRegistrados();
                 break;
-            case 8: system("cls");
+            case 8: reportes();
+                break;
+            case 9: system("cls");
                     cout<<"<<<LOGIN ADMIN>>>"<<endl;
                     cout<<"------------------------------"<<endl;
                     while(reg.leerDeDisco(pos)==1){

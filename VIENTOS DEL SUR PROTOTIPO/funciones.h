@@ -104,6 +104,8 @@ void cobrarVentas(int);
 void buscarVenta(int,int);
 
 void mostrarVentasCobradas();
+
+void mostrarVentasCanceladas();
 ///
 
 
@@ -1153,7 +1155,7 @@ void disminuirStock(const char *codPlat,int cantidad){
 void cancelarPedido(int dni){
     system("cls");
     VentaCabecera reg;
-    int pos=0,idventa,opc;
+    int pos=0,iddetalle,opc;
     bool cancelarOtro=true,cantReg;
     while(cancelarOtro==true){
         cantReg=false;
@@ -1164,10 +1166,11 @@ void cancelarPedido(int dni){
         cout<<"*******************************"<<endl<<endl;
         while(reg.leerDeDisco(pos)==1){
             if(reg.getDNICliente()==dni){
-                reg.Mostrar();
-                cout<<"----------------------------------"<<endl;
-                cantReg=true;
-                pos++;
+                if(reg.getDNIEmpleado()>=0){
+                    reg.Mostrar();
+                    cout<<"----------------------------------"<<endl;
+                    cantReg=true;
+                }
             }
             pos++;
         }
@@ -1177,14 +1180,14 @@ void cancelarPedido(int dni){
         }
         else{
             cout<<"ID DE VENTA: ";
-            cin>>idventa;
-            if(idventa==0){
+            cin>>iddetalle;
+            if(iddetalle==0){
                 cout<<"<<<OPERACIÓN CANCELADA>>>"<<endl;
                 return;
             }
             pos=0;
             while(reg.leerDeDisco(pos)==1){
-                if(reg.getIDVenta()==idventa){
+                if(reg.getIDDetalle()==iddetalle && reg.getDNICliente()==dni){
                     reg.setDNIEmpleado(-1);
                     reg.modificarEnDisco(pos);
                     cout<<"<<<PEDIDO CANCELADO>>>"<<endl;
@@ -1460,11 +1463,11 @@ void mostrarVentasCobradas(){
     VentaCabecera reg;
     int pos=0;
     bool cantReg=false;
-    cout<<"*********************************"<<endl;
-    cout<<"*                               *"<<endl;
-    cout<<"*    MOSTRAR VENTAS COBRADAS    *"<<endl;
-    cout<<"*                               *"<<endl;
-    cout<<"*********************************"<<endl<<endl;
+    cout<<"*************************"<<endl;
+    cout<<"*                       *"<<endl;
+    cout<<"*    VENTAS COBRADAS    *"<<endl;
+    cout<<"*                       *"<<endl;
+    cout<<"*************************"<<endl<<endl;
     cout<<"----------------------------------"<<endl;
     while(reg.leerDeDisco(pos)==1){
         if(reg.getDNIEmpleado()==-2){
@@ -1475,6 +1478,29 @@ void mostrarVentasCobradas(){
         pos++;
     }
     if(cantReg==false) cout<<"NO HAY VENTAS COBRADAS."<<endl;
+    system("pause");
+}
+
+void mostrarVentasCanceladas(){
+    system("cls");
+    VentaCabecera reg;
+    int pos=0;
+    bool cantReg=false;
+    cout<<"***************************"<<endl;
+    cout<<"*                         *"<<endl;
+    cout<<"*    VENTAS CANCELADAS    *"<<endl;
+    cout<<"*                         *"<<endl;
+    cout<<"***************************"<<endl<<endl;
+    cout<<"----------------------------------"<<endl;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getDNIEmpleado()==-1){
+            reg.Mostrar();
+            cout<<"----------------------------------"<<endl;
+            cantReg=true;
+        }
+        pos++;
+    }
+    if(cantReg==false) cout<<"NO HAY VENTAS CANCELADAS."<<endl;
     system("pause");
 }
 ///
