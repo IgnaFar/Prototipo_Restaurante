@@ -118,6 +118,7 @@ int main(){
                     cout<<"------------------------------"<<endl;
                     while(aux.leerDeDisco(pos)==1){
                         aux.MostrarEmpleado();
+                        cout<<"------------------------------"<<endl;
                         pos++;
                     }
                     cout<<"------------------------------"<<endl<<endl;
@@ -280,6 +281,7 @@ void menuEmpleados(int dni){
 ///MENU ADMIN
 void menuAdmin(){
     Cliente reg;
+    Empleado aux;
     int opc,dniCliente,pos,dniEmpleado;
     bool existeCliente,existeEmpleado;
     while(true){
@@ -324,21 +326,21 @@ void menuAdmin(){
                 break;
             case 4: system("cls");
                     cout<<"------------------------------"<<endl;
-                    while(reg.leerDeDisco(pos)==1){
-                        if(reg.getEstado()==true){
-                            reg.MostrarCliente();
+                    while(aux.leerDeDisco(pos)==1){
+                        if(aux.getEstado()==true){
+                            aux.MostrarEmpleado();
                             cout<<"------------------------------"<<endl;
                         }
                         pos++;
                     }
-                    cout<<"DNI DEL CLIENTE: ";
+                    cout<<"DNI DEL EMPLEADO: ";
                     cin>>dniEmpleado;
                     existeEmpleado=buscarEmpleado(dniEmpleado);
                     if(existeEmpleado==true){
                         modificarDatosEmpleado(dniEmpleado);
                     }
                     else{
-                        cout<<"EL CLIENTE NO EXISTE O EL DNI NO ES CORRECTO."<<endl;
+                        cout<<"EL EMPLEADO NO EXISTE O EL DNI NO ES CORRECTO."<<endl;
                         system("pause");
                     }
                 break;

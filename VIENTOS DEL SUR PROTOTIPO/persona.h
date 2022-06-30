@@ -122,7 +122,7 @@ void Empleado::MostrarEmpleado(){
 }
 
 void Empleado::MostrarEmpleadoLogeado(){
-    cout<<"         "<<nombre<<" "<<apellido<<endl;
+    cout<<"       "<<nombre<<" "<<apellido<<endl;
 }
 
 int Empleado::leerDeDisco(int pos){
