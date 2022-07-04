@@ -70,7 +70,7 @@ void importeTotalRecaudado();
 
 
 ///MENU CLIENTES
-void menuCliente();
+void menuCliente(int);
 
 void registrarCliente();
 
@@ -104,6 +104,7 @@ bool buscarIDDetalle(int);
 void atenderAlCliente(int,int);
 
 void cobrarVentas(int);
+bool buscarClienteAtendido(int);
 void buscarVenta(int,int);
 
 void mostrarVentasCobradas();
@@ -1214,7 +1215,7 @@ void cancelarPedido(int dni){
     system("cls");
     VentaCabecera reg;
     int pos=0,iddetalle,opc;
-    bool cancelarOtro=true,cantReg;
+    bool cancelarOtro=true,cantReg,errorDetalle=false;
     while(cancelarOtro==true){
         cantReg=false;
         cout<<"*******************************"<<endl;
@@ -1250,9 +1251,14 @@ void cancelarPedido(int dni){
                     reg.setDNIEmpleado(-1);
                     reg.modificarEnDisco(pos);
                     cancelarDetalle(iddetalle);
+                    errorDetalle=true;
                     cout<<"<<<PEDIDO CANCELADO>>>"<<endl;
                 }
                 pos++;
+            }
+            if(errorDetalle==false){
+                cout<<"EL ID DE DETALLE INGRESADO NO EXISTE."<<endl;
+                return;
             }
             cout<<"¿QUIÉRE CANCELAR ALGO MÁS? SI(1)/NO(0)"<<endl;
             cin>>opc;
@@ -1500,12 +1506,13 @@ void cobrarVentas(int dniEmp){
     system("cls");
     VentaDetalle reg;
     int pos=0,iddetalle;
-    bool existeDetalle,noAtendido,cantReg=false;
+    bool existeDetalle,noAtendido,cantReg=false,clienteAtendido;
     cout<<"*********************************"<<endl;
     cout<<"*                               *"<<endl;
     cout<<"*         COBRAR VENTAS         *"<<endl;
     cout<<"*                               *"<<endl;
     cout<<"*********************************"<<endl<<endl;
+    cout<<"         VENTAS ATENDIDAS         "<<endl;
     cout<<"----------------------------------"<<endl;
     while(reg.leerDeDisco(pos)==1){
         if(reg.getEstado()==true){
@@ -1525,8 +1532,9 @@ void cobrarVentas(int dniEmp){
     if(cantReg==true){
         cout<<"ELIJA EL ID DE DETALLE A COBRAR: ";
         cin>>iddetalle;
+        clienteAtendido=buscarClienteAtendido(iddetalle);
         existeDetalle=buscarIDDetalle(iddetalle);
-        if(existeDetalle==true){
+        if(existeDetalle==true && clienteAtendido==true){
             cout<<endl;
             buscarVenta(iddetalle,dniEmp);
             pos=0;
@@ -1541,7 +1549,7 @@ void cobrarVentas(int dniEmp){
             system("pause");
         }
         else{
-            cout<<"LA VENTA NO EXISTE O EL ID NO ES CORRECTO."<<endl;
+            cout<<"LA VENTA NO EXISTE O NO HA SIDO ATEDIDA AÚN."<<endl;
             system("pause");
         }
     }
@@ -1551,6 +1559,20 @@ void cobrarVentas(int dniEmp){
         system("pause");
         return;
     }
+}
+
+bool buscarClienteAtendido(int iddetalle){
+    VentaCabecera reg;
+    int pos=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getIDDetalle()==iddetalle){
+            if(reg.getDNIEmpleado()>0){
+                return true;
+            }
+        }
+        pos++;
+    }
+    return false;
 }
 
 void buscarVenta(int iddetalle,int dniEmp){

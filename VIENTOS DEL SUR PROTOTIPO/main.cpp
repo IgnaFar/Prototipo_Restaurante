@@ -14,14 +14,11 @@ using namespace std;
 
 int main(){
     setlocale(LC_ALL, "Spanish");
-    Empleado aux;
-    Admin obj;
-    int opc,pos,dni;
+    int opc,dni,registrar;
     char contrasenia[9];
-    bool existeContra,existeEmpleado,existeAdmin;
+    bool existeContra,existeEmpleado,existeAdmin,existeCliente;
     while(true){
         system("cls");
-        pos=0;
         cout<<"******************************"<<endl;
         cout<<"*                            *"<<endl;
         cout<<"*       MENÚ PRINCIPAL       *"<<endl;
@@ -35,19 +32,36 @@ int main(){
         cout<<"------------------------------"<<endl;
         cout<<"OPCIÓN: -> ";
         cin>>opc;
-        pos=0;
         switch(opc){
-            case 1: menuCliente();
+            case 1: cout<<"<<<LOGIN CLIENTE>>>"<<endl;
+                    cout<<"DNI DEL CLIENTE: ";
+                    cin>>dni;
+                    if(dni!=0){
+                        existeCliente=buscarCliente(dni);
+                        if(existeCliente==true){
+                            cout<<"CONTRASEÑA: ";
+                            cargarCadena(contrasenia,8);
+                            existeContra=buscarClienteContra(contrasenia);
+                            if(existeContra==true){
+                                menuCliente(dni);
+                            }
+                            else{
+                                cout<<"LA CONTRASEÑA NO ES CORRECTA."<<endl;
+                                system("pause");
+                            }
+                        }
+                        else{
+                            cout<<"EL DNI NO SE ENCUENTRA REGISTRADO."<<endl;
+                            cout<<"¿DESEA REGISTRARLO? SI(1)/NO(0)"<<endl;
+                            cin>>registrar;
+                            if(registrar==1){
+                                registrarCliente();
+                            }
+                        }
+                    }
                 break;
             case 2: system("cls");
                     cout<<"<<<LOGIN EMPLEADO>>>"<<endl;
-                    cout<<"------------------------------"<<endl;
-                    while(aux.leerDeDisco(pos)==1){
-                        aux.MostrarEmpleado();
-                        cout<<"------------------------------"<<endl;
-                        pos++;
-                    }
-                    cout<<"------------------------------"<<endl<<endl;
                     cout<<"DNI DEL EMPLEADO: ";
                     cin>>dni;
                     existeEmpleado=buscarEmpleado(dni);
@@ -70,12 +84,6 @@ int main(){
                 break;
             case 3: system("cls");
                     cout<<"<<<LOGIN ADMIN>>>"<<endl;
-                    cout<<"------------------------------"<<endl;
-                    while(obj.leerDeDisco(pos)==1){
-                        obj.MostrarAdmin();
-                        pos++;
-                    }
-                    cout<<"------------------------------"<<endl<<endl;
                     cout<<"DNI: ";
                     cin>>dni;
                     existeAdmin=buscarAdmin(dni);
@@ -108,7 +116,7 @@ int main(){
 }
 
 ///MENU CLIENTES
-void menuCliente(){
+void menuCliente(int dniCliente){
     Cliente reg;
     int opc,dni,pos;
     char contrasenia[9];
@@ -121,47 +129,26 @@ void menuCliente(){
         cout<<"*       MENÚ CLIENTES       *"<<endl;
         cout<<"*                           *"<<endl;
         cout<<"*****************************"<<endl<<endl;
-        cout<<"------------------------------"<<endl;
-        while(reg.leerDeDisco(pos)==1){
-            reg.MostrarCliente();
-            cout<<"------------------------------"<<endl;
+        cout<<"-------CLIENTE LOGEADO-------"<<endl;
+        while(reg.leerDeDisco(pos)){
+            if(reg.getDNI()==dniCliente){
+                reg.MostrarClienteLogeado();
+                cout<<"------------------------------"<<endl;
+            }
             pos++;
         }
-        cout<<endl;
         cout<<"------------------------------"<<endl;
-        cout<<"1) REGISTRAR CLIENTE"<<endl;
-        cout<<"2) CREAR PEDIDO"<<endl;
-        cout<<"3) CANCELAR PEDIDO"<<endl;
-        cout<<"4) MENÚ PEDIDOS"<<endl;
+        cout<<"1) CREAR PEDIDO"<<endl;
+        cout<<"2) CANCELAR PEDIDO"<<endl;
+        cout<<"3) MENÚ PEDIDOS"<<endl;
         cout<<"0) VOLVER"<<endl;
         cout<<"------------------------------"<<endl;
         cout<<"OPCIÓN: -> ";
         cin>>opc;
-        pos=0;
         switch(opc){
-            case 1: registrarCliente();
+            case 1: crearPedido(dniCliente);
                 break;
             case 2: cout<<endl;
-                    cout<<"DNI DEL CLIENTE: ";
-                    cin>>dni;
-                    existeCliente=buscarCliente(dni);
-                    if(existeCliente==true){
-                        cout<<"CONTRASEÑA: ";
-                        cargarCadena(contrasenia,8);
-                        existeContra=buscarClienteContra(contrasenia);
-                        if(existeContra==true){
-                            crearPedido(dni);
-                        }
-                        else{
-                            cout<<"LA CONTRASEÑA NO ES CORRECTA."<<endl;
-                        }
-                    }
-                    else{
-                        cout<<"EL DNI NO ES CORRECTO."<<endl;
-                    }
-                    system("pause");
-                break;
-            case 3: cout<<endl;
                     cout<<"DNI DEL CLIENTE: ";
                     cin>>dni;
                     existeCliente=buscarCliente(dni);
@@ -181,7 +168,7 @@ void menuCliente(){
                     }
                     system("pause");
                 break;
-            case 4: cout<<endl;
+            case 3: cout<<endl;
                     cout<<"DNI DEL CLIENTE: ";
                     cin>>dni;
                     existeCliente=buscarCliente(dni);
@@ -214,7 +201,6 @@ void menuCliente(){
 
 ///MENU EMPLEADOS
 void menuEmpleados(int dni){
-    Admin reg;
     Empleado aux;
     int opc,pos,dniAdmin;
     char contrasenia[9];
@@ -272,12 +258,6 @@ void menuEmpleados(int dni){
                 break;
             case 9: system("cls");
                     cout<<"<<<LOGIN ADMIN>>>"<<endl;
-                    cout<<"------------------------------"<<endl;
-                    while(reg.leerDeDisco(pos)==1){
-                        reg.MostrarAdmin();
-                        pos++;
-                    }
-                    cout<<"------------------------------"<<endl<<endl;
                     cout<<"DNI: "<<endl;
                     cin>>dniAdmin;
                     existeAdmin=buscarAdmin(dniAdmin);

@@ -27,6 +27,7 @@ class Cliente{
 
         void CargarCliente();
         void MostrarCliente();
+        void MostrarClienteLogeado();
 
         int grabarEnDisco();
         int modificarEnDisco(int);
@@ -53,6 +54,11 @@ void Cliente::MostrarCliente(){
     cout<<"TELÉFONO: "<<telefono<<endl;
     cout<<"ESTADO: "<<estado<<endl;
 }
+
+void Cliente::MostrarClienteLogeado(){
+    cout<<"       "<<nombre<<" "<<apellido<<endl;
+}
+
 
 int Cliente::leerDeDisco(int pos){
     FILE *p;
