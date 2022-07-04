@@ -82,10 +82,11 @@ void traerPlato();
 int chequearStock(const char *,int);
 float importePlato(const char *,int);
 void disminuirStock(const char *,int);
+void restanteStock(const char *);
 
 void cancelarPedido(int);
 void cancelarDetalle(int);
-
+void devolverStock(const char *,int);
 ///
 
 
@@ -246,6 +247,7 @@ void modificarDatosCliente(int dniCliente){
         cout<<"3) MODIFICAR APELLIDO"<<endl;
         cout<<"4) MODIFICAR CONTRASEÑA"<<endl;
         cout<<"5) MODIFICAR TELÉFONO"<<endl;
+        cout<<"0) VOLVER"<<endl;
         cout<<"------------------------------"<<endl;
         cout<<"OPCIÓN: -> ";
         cin>>opc;
@@ -354,6 +356,7 @@ void modificarDatosEmpleado(int dniEmpleado){
         cout<<"2) MODIFICAR NOMBRE"<<endl;
         cout<<"3) MODIFICAR APELLIDO"<<endl;
         cout<<"4) MODIFICAR CONTRASEÑA"<<endl;
+        cout<<"0) VOLVER"<<endl;
         cout<<"------------------------------"<<endl;
         cout<<"OPCIÓN: -> ";
         cin>>opc;
@@ -740,6 +743,11 @@ void modificarStock(){
     if(existePlato==true){
         cout<<"NUÉVA CANTIDAD DE STOCK: ";
         cin>>nuevoStock;
+        while(nuevoStock<=0){
+            cout<<"LA CANTIDAD DE STOCK TIENE QUE SER MAYOR A 0."<<endl;
+            cout<<"NUÉVA CANTIDAD DE STOCK: ";
+            cin>>nuevoStock;
+        }
         cambiarStock(codPlat,nuevoStock);
         cout<<endl;
         cout<<"<<<STOCK ACTUALIZADO>>>"<<endl;
@@ -756,8 +764,15 @@ void cambiarStock(const char *codPlat,int nuevoStock){
     int pos=0;
     while(reg.leerDeDisco(pos)==1){
         if(strcmp(reg.getCodigoPlato(),codPlat)==0){
-            reg.setStock(nuevoStock);
-            reg.modificarEnDisco(pos);
+            if(reg.getEstado()==true){
+                reg.setStock(nuevoStock);
+                reg.modificarEnDisco(pos);
+            }
+            else{
+                reg.setEstado(true);
+                reg.setStock(nuevoStock);
+                reg.modificarEnDisco(pos);
+            }
         }
         pos++;
     }
@@ -1022,6 +1037,7 @@ void crearPedido(int dniCliente){
                                 aux.grabarEnDisco();
                                 repetir=true;
                                 sacarStock=true;
+                                restanteStock(codPlat);
                             }
                         }
                     }
@@ -1058,12 +1074,14 @@ void crearPedido(int dniCliente){
                                 reg.setIDVenta(idventa);
                                 reg.setImporte(importe);
                                 reg.grabarEnDisco();
+                                disminuirStock(codPlat,cantidad);
                                 aux.setIDVenta(idventa);
                                 aux.setCantidad(cantidad);
                                 aux.setImporte(importe);
                                 aux.grabarEnDisco();
                                 pedido=false;
                                 sacarStock=true;
+                                restanteStock(codPlat);
                             }
                         }
                     }
@@ -1131,7 +1149,7 @@ void traerPlato(){
     Plato reg;
     int pos=0;
     while(reg.leerDeDisco(pos)==1){
-        if(reg.getEstado()==1){
+        if(reg.getEstado()==true){
             reg.Mostrar();
             cout<<"----------------------------------"<<endl;
         }
@@ -1173,6 +1191,20 @@ void disminuirStock(const char *codPlat,int cantidad){
             totalStock=reg.getStock()-cantidad;
             reg.setStock(totalStock);
             reg.modificarEnDisco(pos);
+        }
+        pos++;
+    }
+}
+
+void restanteStock(const char *codPlat){
+    Plato reg;
+    int pos=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(strcmp(reg.getCodigoPlato(),codPlat)==0){
+            if(reg.getStock()==0){
+                reg.setEstado(false);
+                reg.modificarEnDisco(pos);
+            }
         }
         pos++;
     }
@@ -1242,8 +1274,28 @@ void cancelarDetalle(int iddetalle){
     int pos=0;
     while(reg.leerDeDisco(pos)==1){
         if(reg.getIDDetalle()==iddetalle){
+            devolverStock(reg.getIDPlato(),reg.getCantidad());
             reg.setEstado(false);
             reg.modificarEnDisco(pos);
+        }
+        pos++;
+    }
+}
+
+void devolverStock(const char *codPlat,int cantidad){
+    Plato reg;
+    int pos=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(strcmp(reg.getCodigoPlato(),codPlat)==0){
+            if(reg.getEstado()==true){
+                reg.setStock(reg.getStock()+cantidad);
+                reg.modificarEnDisco(pos);
+            }
+            else{
+                reg.setEstado(true);
+                reg.setStock(reg.getStock()+cantidad);
+                reg.modificarEnDisco(pos);
+            }
         }
         pos++;
     }

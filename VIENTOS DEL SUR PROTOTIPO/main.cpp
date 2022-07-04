@@ -14,12 +14,105 @@ using namespace std;
 
 int main(){
     setlocale(LC_ALL, "Spanish");
-    Cliente reg;
     Empleado aux;
     Admin obj;
+    int opc,pos,dni;
+    char contrasenia[9];
+    bool existeContra,existeEmpleado,existeAdmin;
+    while(true){
+        system("cls");
+        pos=0;
+        cout<<"******************************"<<endl;
+        cout<<"*                            *"<<endl;
+        cout<<"*       MENÚ PRINCIPAL       *"<<endl;
+        cout<<"*                            *"<<endl;
+        cout<<"******************************"<<endl<<endl;
+        cout<<"------------------------------"<<endl;
+        cout<<"1) MENÚ CLIENTES"<<endl;
+        cout<<"2) MENÚ EMPLEADOS"<<endl;
+        cout<<"3) MENÚ ADMIN"<<endl;
+        cout<<"0) SALIR"<<endl;
+        cout<<"------------------------------"<<endl;
+        cout<<"OPCIÓN: -> ";
+        cin>>opc;
+        pos=0;
+        switch(opc){
+            case 1: menuCliente();
+                break;
+            case 2: system("cls");
+                    cout<<"<<<LOGIN EMPLEADO>>>"<<endl;
+                    cout<<"------------------------------"<<endl;
+                    while(aux.leerDeDisco(pos)==1){
+                        aux.MostrarEmpleado();
+                        cout<<"------------------------------"<<endl;
+                        pos++;
+                    }
+                    cout<<"------------------------------"<<endl<<endl;
+                    cout<<"DNI DEL EMPLEADO: ";
+                    cin>>dni;
+                    existeEmpleado=buscarEmpleado(dni);
+                    if(existeEmpleado==true){
+                        cout<<"CONTRASEÑA: ";
+                        cargarCadena(contrasenia,8);
+                        existeContra=buscarEmpleadoContra(contrasenia);
+                        if(existeContra==true){
+                            menuEmpleados(dni);
+                        }
+                        else{
+                            cout<<"LA CONTRASEÑA NO ES CORRECTA."<<endl;
+                            system("pause");
+                        }
+                    }
+                    else{
+                        cout<<"EL DNI NO ES CORRECTO."<<endl;
+                        system("pause");
+                    }
+                break;
+            case 3: system("cls");
+                    cout<<"<<<LOGIN ADMIN>>>"<<endl;
+                    cout<<"------------------------------"<<endl;
+                    while(obj.leerDeDisco(pos)==1){
+                        obj.MostrarAdmin();
+                        pos++;
+                    }
+                    cout<<"------------------------------"<<endl<<endl;
+                    cout<<"DNI: ";
+                    cin>>dni;
+                    existeAdmin=buscarAdmin(dni);
+                    if(existeAdmin==true){
+                        cout<<"CONTRASEÑA: ";
+                        cargarCadena(contrasenia,8);
+                        existeContra=buscarAdminContra(contrasenia);
+                        if(existeContra==true){
+                            menuAdmin();
+                        }
+                        else{
+                            cout<<"LA CONTRASEÑA NO EXISTE"<<endl;
+                            system("pause");
+                        }
+                    }
+                    else{
+                        cout<<"EL DNI NO EXISTE"<<endl;
+                        system("pause");
+                    }
+                break;
+            case 0: system("cls");
+                cout<<"HASTA LUEGO."<<endl;
+                return 0;
+                break;
+            default: cout<<"OPCIÓN INCORRECTA."<<endl;
+                    system("pause");
+                break;
+        }
+    }
+}
+
+///MENU CLIENTES
+void menuCliente(){
+    Cliente reg;
     int opc,dni,pos;
     char contrasenia[9];
-    bool existeCliente,existeContra,existeEmpleado,existeAdmin;
+    bool existeCliente,existeContra;
     while(true){
         system("cls");
         pos=0;
@@ -40,10 +133,6 @@ int main(){
         cout<<"2) CREAR PEDIDO"<<endl;
         cout<<"3) CANCELAR PEDIDO"<<endl;
         cout<<"4) MENÚ PEDIDOS"<<endl;
-        cout<<"------------------------------"<<endl;
-        cout<<"5) MENÚ EMPLEADOS"<<endl;
-        cout<<"6) MENÚ ADMIN"<<endl;
-        cout<<"------------------------------"<<endl;
         cout<<"0) VOLVER"<<endl;
         cout<<"------------------------------"<<endl;
         cout<<"OPCIÓN: -> ";
@@ -113,66 +202,7 @@ int main(){
                         system("pause");
                     }
                 break;
-            case 5: system("cls");
-                    cout<<"<<<LOGIN EMPLEADO>>>"<<endl;
-                    cout<<"------------------------------"<<endl;
-                    while(aux.leerDeDisco(pos)==1){
-                        aux.MostrarEmpleado();
-                        cout<<"------------------------------"<<endl;
-                        pos++;
-                    }
-                    cout<<"------------------------------"<<endl<<endl;
-                    cout<<"DNI DEL EMPLEADO: ";
-                    cin>>dni;
-                    existeEmpleado=buscarEmpleado(dni);
-                    if(existeEmpleado==true){
-                        cout<<"CONTRASEÑA: ";
-                        cargarCadena(contrasenia,8);
-                        existeContra=buscarEmpleadoContra(contrasenia);
-                        if(existeContra==true){
-                            menuEmpleados(dni);
-                        }
-                        else{
-                            cout<<"LA CONTRASEÑA NO ES CORRECTA."<<endl;
-                            system("pause");
-                        }
-                    }
-                    else{
-                        cout<<"EL DNI NO ES CORRECTO."<<endl;
-                        system("pause");
-                    }
-                break;
-            case 6: system("cls");
-                    cout<<"<<<LOGIN ADMIN>>>"<<endl;
-                    cout<<"------------------------------"<<endl;
-                    while(obj.leerDeDisco(pos)==1){
-                        obj.MostrarAdmin();
-                        pos++;
-                    }
-                    cout<<"------------------------------"<<endl<<endl;
-                    cout<<"DNI: ";
-                    cin>>dni;
-                    existeAdmin=buscarAdmin(dni);
-                    if(existeAdmin==true){
-                        cout<<"CONTRASEÑA: ";
-                        cargarCadena(contrasenia,8);
-                        existeContra=buscarAdminContra(contrasenia);
-                        if(existeContra==true){
-                            menuAdmin();
-                        }
-                        else{
-                            cout<<"LA CONTRASEÑA NO EXISTE"<<endl;
-                            system("pause");
-                        }
-                    }
-                    else{
-                        cout<<"EL DNI NO EXISTE"<<endl;
-                        system("pause");
-                    }
-                break;
-            case 0: system("cls");
-                cout<<"HASTA LUEGO."<<endl;
-                return 0;
+            case 0: return;
                 break;
             default: cout<<"OPCIÓN INCORRECTA."<<endl;
                     system("pause");
@@ -180,6 +210,7 @@ int main(){
         }
     }
 }
+///
 
 ///MENU EMPLEADOS
 void menuEmpleados(int dni){
