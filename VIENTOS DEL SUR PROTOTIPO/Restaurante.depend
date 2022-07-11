@@ -20,7 +20,7 @@
 
 1655602104 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\restaurante\funciones.h
 
-1656902935 source:d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\main.cpp
+1657550477 source:d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\main.cpp
 	<iostream>
 	<cstdio>
 	<cstring>
@@ -28,7 +28,7 @@
 	"fecha.h"
 	"ventaDetalle.h"
 	"ventaCabecera.h"
-	"persona.h"
+	"usuario.h"
 	"plato.h"
 	"funciones.h"
 
@@ -36,13 +36,15 @@
 
 1655576453 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\venta.h
 
-1656901648 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\persona.h
+1657047192 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\persona.h
 
 1655983044 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\plato.h
 
-1656901686 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\funciones.h
+1657133607 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\funciones.h
 
 1656482843 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\ventadetalle.h
 
 1656272208 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\ventacabecera.h
+
+1657047192 d:\1_estudio academico\utn-frgp\2022 primer cuatrimestre\tp final\prototipo\prototipo2\prototipo_restaurante\vientos del sur prototipo\usuario.h
 
