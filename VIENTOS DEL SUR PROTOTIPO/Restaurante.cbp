@@ -35,8 +35,8 @@
 		<Unit filename="fecha.h" />
 		<Unit filename="funciones.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="persona.h" />
 		<Unit filename="plato.h" />
+		<Unit filename="usuario.h" />
 		<Unit filename="ventaCabecera.h" />
 		<Unit filename="ventaDetalle.h" />
 		<Extensions>

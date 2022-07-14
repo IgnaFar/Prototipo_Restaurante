@@ -95,6 +95,8 @@ void menuVentasPedidos();
 
 void menuVentasCliente(int);
 void mostrarPedido(int);
+int contarRegistrosPorID(int);
+float acumlarPrecio(int);
 
 void mostrarVentas();
 bool clienteNoAtendido(int);
@@ -1363,7 +1365,7 @@ void mostrarPedido(int dni){
     system("cls");
     VentaCabecera reg;
     int pos=0;
-    float acumPrecio=0;
+    float acumPrecio,registrosLeidos,cantRegistros=0;
     bool cantReg=false;
     cout<<"********************************"<<endl;
     cout<<"*                              *"<<endl;
@@ -1373,8 +1375,6 @@ void mostrarPedido(int dni){
     cout<<"----------------------------------"<<endl;
     while(reg.leerDeDisco(pos)==1){
         if(reg.getDNICliente()==dni && reg.getDNIEmpleado()>=0){
-            reg.Mostrar();
-            cout<<"----------------------------------"<<endl;
             cantReg=true;
         }
         pos++;
@@ -1383,19 +1383,53 @@ void mostrarPedido(int dni){
         pos=0;
         while(reg.leerDeDisco(pos)==1){
             if(reg.getDNICliente()==dni && reg.getDNIEmpleado()>=0){
-                acumPrecio+=reg.getImporte();
+                reg.Mostrar();
+                cout<<"----------------------------------"<<endl;
+                cantRegistros++;
+                registrosLeidos=contarRegistrosPorID(reg.getIDDetalle());
+                if(registrosLeidos==cantRegistros){
+                    acumPrecio=acumlarPrecio(reg.getIDDetalle());
+                    cout<<endl;
+                    cout<<"**************************************"<<endl;
+                    cout<<"    IMPORTE TOTAL DETALLE "<<reg.getIDDetalle()<<" : $"<<acumPrecio<<endl;
+                    cout<<"**************************************"<<endl;
+                    cout<<endl;
+                    cout<<"----------------------------------"<<endl;
+                    cantRegistros=0;
+                }
             }
             pos++;
         }
-        cout<<endl;
-        cout<<"**************************************"<<endl;
-        cout<<"       IMPORTE TOTAL: $"<<acumPrecio<<endl;
-        cout<<"**************************************"<<endl;
     }
     else{
         cout<<"EL CLIENTE NO HA HECHO UN PEDIDO AÚN."<<endl;
     }
     system("pause");
+}
+
+int contarRegistrosPorID(int iddetalle){
+    VentaCabecera reg;
+    int pos=0,cantidad=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getIDDetalle()==iddetalle){
+            cantidad++;
+        }
+        pos++;
+    }
+    return cantidad;
+}
+
+float acumlarPrecio(int iddetalle){
+    VentaCabecera reg;
+    int pos=0;
+    float precio=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getIDDetalle()==iddetalle){
+            precio+=reg.getImporte();
+        }
+        pos++;
+    }
+    return precio;
 }
 
 void mostrarVentas(){
@@ -1492,7 +1526,7 @@ void atenderCliente(int dniEmp){
         }
         else{
             cout<<endl;
-            cout<<"LA VENTA NO EXISTE O EL ID NO ES CORRECTO."<<endl;
+            cout<<"LA VENTA NO EXISTE O EL CLIENTE YA FUE ANTENDIDO."<<endl;
             system("pause");
         }
     }
@@ -1512,12 +1546,18 @@ void atenderAlCliente(int iddetalle,int dniEmp){
 
 bool buscarIDDetalle(int iddetalle){
     VentaDetalle reg;
-    int pos=0;
-    while(reg.leerDeDisco(pos)==1){
+    VentaCabecera aux;
+    int pos1=0,pos2=0;
+    while(reg.leerDeDisco(pos1)==1){
         if(reg.getIDDetalle()==iddetalle){
-            return true;
+            while(aux.leerDeDisco(pos2)==1){
+                if(aux.getIDDetalle()==iddetalle && aux.getDNIEmpleado()==0){
+                    return true;
+                }
+                pos2++;
+            }
         }
-        pos++;
+        pos1++;
     }
     return false;
 }
@@ -1552,6 +1592,9 @@ void cobrarVentas(int dniEmp){
     if(cantReg==true){
         cout<<"ELIJA EL ID DE DETALLE A COBRAR: ";
         cin>>iddetalle;
+        if(iddetalle==0){
+            return;
+        }
         clienteAtendido=buscarClienteAtendido(iddetalle);
         existeDetalle=buscarIDDetalle(iddetalle);
         if(existeDetalle==true && clienteAtendido==true){
@@ -1565,11 +1608,13 @@ void cobrarVentas(int dniEmp){
                 }
                 pos++;
             }
+            cout<<endl;
             cout<<"<<<LA VENTA SE COBRÓ CON ÉXITO>>>"<<endl;
             system("pause");
         }
         else{
-            cout<<"LA VENTA NO EXISTE O NO HA SIDO ATEDIDA AÚN."<<endl;
+            cout<<endl;
+            cout<<"LA VENTA NO EXISTE O NO HA SIDO ATENDIDA AÚN."<<endl;
             system("pause");
         }
     }
