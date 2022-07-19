@@ -32,15 +32,59 @@ int main(){
         cout<<"*                            *"<<endl;
         cout<<"******************************"<<endl<<endl;
         cout<<"------------------------------"<<endl;
-        cout<<"1) MENÚ CLIENTES"<<endl;
+        cout<<"1) MENÚ ADMIN"<<endl;
         cout<<"2) MENÚ EMPLEADOS"<<endl;
-        cout<<"3) MENÚ ADMIN"<<endl;
+        cout<<"3) MENÚ CLIENTES"<<endl;
         cout<<"0) SALIR"<<endl;
         cout<<"------------------------------"<<endl;
         cout<<"OPCIÓN: -> ";
         cin>>opc;
         switch(opc){
             case 1: system("cls");
+                    cout<<"<<<LOGIN ADMIN>>>"<<endl;
+                    cout<<"DNI: ";
+                    cin>>dni;
+                    existeAdmin=buscarAdmin(dni);
+                    if(existeAdmin==true){
+                        cout<<"CONTRASEÑA: ";
+                        cargarCadena(contrasenia,8);
+                        existeContra=buscarAdminContra(contrasenia);
+                        if(existeContra==true){
+                            menuAdmin(dni);
+                        }
+                        else{
+                            cout<<"LA CONTRASEÑA NO EXISTE"<<endl;
+                            system("pause");
+                        }
+                    }
+                    else{
+                        cout<<"EL DNI NO EXISTE"<<endl;
+                        system("pause");
+                    }
+                break;
+            case 2: system("cls");
+                    cout<<"<<<LOGIN EMPLEADO>>>"<<endl;
+                    cout<<"DNI DEL EMPLEADO: ";
+                    cin>>dni;
+                    existeEmpleado=buscarEmpleado(dni);
+                    if(existeEmpleado==true){
+                        cout<<"CONTRASEÑA: ";
+                        cargarCadena(contrasenia,8);
+                        existeContra=buscarEmpleadoContra(contrasenia);
+                        if(existeContra==true){
+                            menuEmpleados(dni);
+                        }
+                        else{
+                            cout<<"LA CONTRASEÑA NO ES CORRECTA."<<endl;
+                            system("pause");
+                        }
+                    }
+                    else{
+                        cout<<"EL DNI NO ES CORRECTO."<<endl;
+                        system("pause");
+                    }
+                break;
+            case 3: system("cls");
                     cout<<"¿YA ESTÁ REGISTRADO? SI(1)/NO(0)"<<endl;
                     cin>>acceso;
                     if(acceso==1){
@@ -75,50 +119,6 @@ int main(){
                         if(registrar==1){
                             registrarCliente();
                         }
-                    }
-                break;
-            case 2: system("cls");
-                    cout<<"<<<LOGIN EMPLEADO>>>"<<endl;
-                    cout<<"DNI DEL EMPLEADO: ";
-                    cin>>dni;
-                    existeEmpleado=buscarEmpleado(dni);
-                    if(existeEmpleado==true){
-                        cout<<"CONTRASEÑA: ";
-                        cargarCadena(contrasenia,8);
-                        existeContra=buscarEmpleadoContra(contrasenia);
-                        if(existeContra==true){
-                            menuEmpleados(dni);
-                        }
-                        else{
-                            cout<<"LA CONTRASEÑA NO ES CORRECTA."<<endl;
-                            system("pause");
-                        }
-                    }
-                    else{
-                        cout<<"EL DNI NO ES CORRECTO."<<endl;
-                        system("pause");
-                    }
-                break;
-            case 3: system("cls");
-                    cout<<"<<<LOGIN ADMIN>>>"<<endl;
-                    cout<<"DNI: ";
-                    cin>>dni;
-                    existeAdmin=buscarAdmin(dni);
-                    if(existeAdmin==true){
-                        cout<<"CONTRASEÑA: ";
-                        cargarCadena(contrasenia,8);
-                        existeContra=buscarAdminContra(contrasenia);
-                        if(existeContra==true){
-                            menuAdmin(dni);
-                        }
-                        else{
-                            cout<<"LA CONTRASEÑA NO EXISTE"<<endl;
-                            system("pause");
-                        }
-                    }
-                    else{
-                        cout<<"EL DNI NO EXISTE"<<endl;
-                        system("pause");
                     }
                 break;
             case 0: system("cls");
@@ -204,9 +204,7 @@ void menuCliente(int dniCliente){
 ///MENU EMPLEADOS
 void menuEmpleados(int dniEmpleado){
     Usuario reg;
-    int opc,pos,dniAdmin;
-    char contrasenia[9];
-    bool existeAdmin,existeContra;
+    int opc,pos;
     while(true){
         system("cls");
         pos=0;
@@ -216,7 +214,7 @@ void menuEmpleados(int dniEmpleado){
         cout<<"*                            *"<<endl;
         cout<<"******************************"<<endl<<endl;
         cout<<"-------EMPLEADO LOGEADO-------"<<endl;
-        while(reg.leerDeDisco(pos)){
+        while(reg.leerDeDisco(pos)==1){
             if(reg.getDNI()==dniEmpleado && reg.getTipo()==2){
                 reg.MostrarLogeado();
                 cout<<"------------------------------"<<endl;
@@ -233,14 +231,10 @@ void menuEmpleados(int dniEmpleado){
         cout<<"6) MOSTRAR VENTAS CANCELADAS"<<endl;
         cout<<"7) MOSTRAR CLIENTES REGISTRADOS"<<endl;
         cout<<"8) REPORTES"<<endl;
-        cout<<"------------------------------"<<endl;
-        cout<<"9) MENÚ ADMIN"<<endl;
-        cout<<"------------------------------"<<endl;
         cout<<"0) VOLVER"<<endl;
         cout<<"------------------------------"<<endl;
         cout<<"OPCIÓN: -> ";
         cin>>opc;
-        pos=0;
         switch(opc){
             case 1: menuPlatos();
                 break;
@@ -257,28 +251,6 @@ void menuEmpleados(int dniEmpleado){
             case 7: mostrarClientesRegistrados();
                 break;
             case 8: reportes();
-                break;
-            case 9: system("cls");
-                    cout<<"<<<LOGIN ADMIN>>>"<<endl;
-                    cout<<"DNI: ";
-                    cin>>dniAdmin;
-                    existeAdmin=buscarAdmin(dniAdmin);
-                    if(existeAdmin==true){
-                        cout<<"CONTRASEÑA: ";
-                        cargarCadena(contrasenia,8);
-                        existeContra=buscarAdminContra(contrasenia);
-                        if(existeContra==true){
-                            menuAdmin(dniAdmin);
-                        }
-                        else{
-                            cout<<"LA CONTRASEÑA NO EXISTE"<<endl;
-                            system("pause");
-                        }
-                    }
-                    else{
-                        cout<<"EL DNI NO EXISTE"<<endl;
-                        system("pause");
-                    }
                 break;
             case 0: return;
                 break;
@@ -304,7 +276,7 @@ void menuAdmin(int dniAdmin){
         cout<<"*      ACCESO ADMIN      *"<<endl;
         cout<<"**************************"<<endl<<endl;
         cout<<"--------ADMIN LOGEADO--------"<<endl;
-        while(reg.leerDeDisco(pos)){
+        while(reg.leerDeDisco(pos)==1){
             if(reg.getDNI()==dniAdmin && reg.getTipo()==1){
                 reg.MostrarLogeado();
                 cout<<"------------------------------"<<endl;
@@ -316,6 +288,8 @@ void menuAdmin(int dniAdmin){
         cout<<"2) REGISTRAR NUEVO EMPLEADO"<<endl;
         cout<<"3) MODIFICAR DATOS DEL CLIENTE"<<endl;
         cout<<"4) MODIFICAR DATOS DEL EMPLEADO"<<endl;
+        cout<<"5) DAR DE BAJA AL CLIENTE"<<endl;
+        cout<<"6) DAR DE BAJA AL EMPLEADO"<<endl;
         cout<<"0) VOLVER"<<endl;
         cout<<"------------------------------"<<endl;
         cout<<"OPCIÓN: -> ";
@@ -379,6 +353,10 @@ void menuAdmin(int dniAdmin){
                             system("pause");
                         }
                     }
+                break;
+            case 5: bajaCliente();
+                break;
+            case 6: bajaEmpleado();
                 break;
             case 0: return;
                 break;

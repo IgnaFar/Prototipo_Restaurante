@@ -25,6 +25,8 @@ void menuAdmin(int);
 void crearEmpleado();
 void modificarDatosCliente(int);
 void modificarDatosEmpleado(int);
+void bajaCliente();
+void bajaEmpleado();
 
 ///
 
@@ -467,6 +469,94 @@ void modificarDatosEmpleado(int dniEmpleado){
                     system("pause");
                 break;
         }
+    }
+}
+
+void bajaCliente(){
+    system("cls");
+    Usuario reg;
+    int pos=0,dniCliente;
+    bool cantReg=false;
+    cout<<"*******************************"<<endl;
+    cout<<"*    DAR DE BAJA A CLIENTE    *"<<endl;
+    cout<<"*******************************"<<endl<<endl;
+    cout<<"----------------------------------"<<endl;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getTipo()==3){
+            cantReg=true;
+        }
+        pos++;
+    }
+    if(cantReg==true){
+        pos=0;
+        while(reg.leerDeDisco(pos)==1){
+            if(reg.getTipo()==3){
+                reg.Mostrar();
+                cout<<"----------------------------------"<<endl;
+            }
+            pos++;
+        }
+        cout<<"ESCOJA EL DNI DE UN CLIENTE: ";
+        cin>>dniCliente;
+        if(dniCliente==0){
+            return;
+        }
+        pos=0;
+        while(reg.leerDeDisco(pos)==1){
+            if(reg.getDNI()==dniCliente && reg.getTipo()==3){
+                reg.setEstado(false);
+                cout<<"<<<SE DIÓ DE BAJA AL CLIENTE.>>>"<<endl;
+            }
+            pos++;
+        }
+    }
+    else{
+        cout<<"NO HAY CLIENTES REGISTRADOS AÚN."<<endl;
+        system("pause");
+    }
+}
+
+void bajaEmpleado(){
+    system("cls");
+    Usuario reg;
+    int pos=0,dniEmpleado;
+    bool cantReg=false;
+    cout<<"********************************"<<endl;
+    cout<<"*    DAR DE BAJA A EMPLEADO    *"<<endl;
+    cout<<"********************************"<<endl<<endl;
+    cout<<"----------------------------------"<<endl;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getTipo()==2){
+            cantReg=true;
+        }
+        pos++;
+    }
+    if(cantReg==true){
+        pos=0;
+        while(reg.leerDeDisco(pos)==1){
+            if(reg.getTipo()==2){
+                reg.Mostrar();
+                cout<<"----------------------------------"<<endl;
+            }
+            pos++;
+        }
+        cout<<"ESCOJA EL DNI DE UN EMPLEADO: ";
+        cin>>dniEmpleado;
+        if(dniEmpleado==0){
+            return;
+        }
+        pos=0;
+        while(reg.leerDeDisco(pos)==1){
+            if(reg.getDNI()==dniEmpleado && reg.getTipo()==2){
+                reg.setEstado(false);
+                cout<<"<<<SE DIÓ DE BAJA AL EMPLEADO.>>>"<<endl;
+            }
+            pos++;
+        }
+    }
+    else{
+        cout<<"NO HAY EMPLEADOS REGISTRADOS AÚN."<<endl;
+        system("pause");
     }
 }
 ///
