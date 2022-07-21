@@ -3,7 +3,7 @@
 
 ///CLIENTE
 class Usuario{
-    protected:
+    private:
         int dni;
         int tipo; /// 1: admin; 2: empleado; 3: cliente
         char nombre[30];

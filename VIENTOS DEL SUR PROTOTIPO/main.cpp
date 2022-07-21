@@ -48,7 +48,7 @@ int main(){
                     if(existeAdmin==true){
                         cout<<"CONTRASEÑA: ";
                         cargarCadena(contrasenia,8);
-                        existeContra=buscarAdminContra(contrasenia);
+                        existeContra=buscarAdminContra(dni,contrasenia);
                         if(existeContra==true){
                             menuAdmin(dni);
                         }
@@ -70,7 +70,7 @@ int main(){
                     if(existeEmpleado==true){
                         cout<<"CONTRASEÑA: ";
                         cargarCadena(contrasenia,8);
-                        existeContra=buscarEmpleadoContra(contrasenia);
+                        existeContra=buscarEmpleadoContra(dni,contrasenia);
                         if(existeContra==true){
                             menuEmpleados(dni);
                         }
@@ -97,7 +97,7 @@ int main(){
                             if(existeCliente==true){
                                 cout<<"CONTRASEÑA: ";
                                 cargarCadena(contrasenia,8);
-                                existeContra=buscarClienteContra(contrasenia);
+                                existeContra=buscarClienteContra(dni,contrasenia);
                                 if(existeContra==true){
                                     menuCliente(dni);
                                 }
@@ -267,7 +267,7 @@ void menuEmpleados(int dniEmpleado){
 void menuAdmin(int dniAdmin){
     Usuario reg;
     int opc,dniCliente,pos,dniEmpleado;
-    bool existeCliente,existeEmpleado,cancelarOperacion;
+    bool existeCliente,existeEmpleado,cancelarOperacion,cantReg=false;
     while(true){
         system("cls");
         pos=0;
@@ -290,6 +290,9 @@ void menuAdmin(int dniAdmin){
         cout<<"4) MODIFICAR DATOS DEL EMPLEADO"<<endl;
         cout<<"5) DAR DE BAJA AL CLIENTE"<<endl;
         cout<<"6) DAR DE BAJA AL EMPLEADO"<<endl;
+        cout<<"7) MOSTRAR ADMINISTRADORES REGISTRADOS"<<endl;
+        cout<<"8) REGISTRAR A UN NUEVO ADMINISTRADOR"<<endl;
+        cout<<"9) DAR DE BAJA A UN ADMINISTRADOR"<<endl;
         cout<<"0) VOLVER"<<endl;
         cout<<"------------------------------"<<endl;
         cout<<"OPCIÓN: -> ";
@@ -305,26 +308,39 @@ void menuAdmin(int dniAdmin){
                     cout<<"------------------------------"<<endl;
                     while(reg.leerDeDisco(pos)==1){
                         if(reg.getEstado()==true && reg.getTipo()==3){
-                            reg.Mostrar();
-                            cout<<"------------------------------"<<endl;
+                            cantReg=true;
                         }
                         pos++;
                     }
-                    cout<<"DNI DEL CLIENTE: ";
-                    cin>>dniCliente;
-                    if(dniCliente==0){
-                        cancelarOperacion=true;
+                    if(cantReg==true){
+                        pos=0;
+                        while(reg.leerDeDisco(pos)==1){
+                            if(reg.getEstado()==true && reg.getTipo()==3){
+                                reg.Mostrar();
+                                cout<<"------------------------------"<<endl;
+                            }
+                            pos++;
+                        }
+                        cout<<"DNI DEL CLIENTE: ";
+                        cin>>dniCliente;
+                        if(dniCliente==0){
+                            cancelarOperacion=true;
+                        }
+                        if(cancelarOperacion==false){
+                            existeCliente=buscarCliente(dniCliente);
+                            if(existeCliente==true){
+                                modificarDatosCliente(dniCliente);
+                            }
+                            else{
+                                cout<<endl;
+                                cout<<"EL CLIENTE NO EXISTE O EL DNI NO ES CORRECTO."<<endl;
+                                system("pause");
+                            }
+                        }
                     }
-                    if(cancelarOperacion==false){
-                        existeCliente=buscarCliente(dniCliente);
-                        if(existeCliente==true){
-                            modificarDatosCliente(dniCliente);
-                        }
-                        else{
-                            cout<<endl;
-                            cout<<"EL CLIENTE NO EXISTE O EL DNI NO ES CORRECTO."<<endl;
-                            system("pause");
-                        }
+                    else{
+                        cout<<"NO SE ENCONTRO NINGÚN CLIENTE."<<endl;
+                        system("pause");
                     }
                 break;
             case 4: system("cls");
@@ -332,31 +348,50 @@ void menuAdmin(int dniAdmin){
                     cout<<"------------------------------"<<endl;
                     while(reg.leerDeDisco(pos)==1){
                         if(reg.getEstado()==true && reg.getTipo()==2){
-                            reg.Mostrar();
-                            cout<<"------------------------------"<<endl;
+                            cantReg=true;
                         }
                         pos++;
                     }
-                    cout<<"DNI DEL EMPLEADO: ";
-                    cin>>dniEmpleado;
-                    if(dniEmpleado==0){
-                        cancelarOperacion=true;
+                    if(cantReg==true){
+                        pos=0;
+                        while(reg.leerDeDisco(pos)==1){
+                            if(reg.getEstado()==true && reg.getTipo()==2){
+                                reg.Mostrar();
+                                cout<<"------------------------------"<<endl;
+                            }
+                            pos++;
+                        }
+                        cout<<"DNI DEL EMPLEADO: ";
+                        cin>>dniEmpleado;
+                        if(dniEmpleado==0){
+                            cancelarOperacion=true;
+                        }
+                        if(cancelarOperacion==false){
+                            existeEmpleado=buscarEmpleado(dniEmpleado);
+                            if(existeEmpleado==true){
+                                modificarDatosEmpleado(dniEmpleado);
+                            }
+                            else{
+                                cout<<endl;
+                                cout<<"EL EMPLEADO NO EXISTE O EL DNI NO ES CORRECTO."<<endl;
+                                system("pause");
+                            }
+                        }
                     }
-                    if(cancelarOperacion==false){
-                        existeEmpleado=buscarEmpleado(dniEmpleado);
-                        if(existeEmpleado==true){
-                            modificarDatosEmpleado(dniEmpleado);
-                        }
-                        else{
-                            cout<<endl;
-                            cout<<"EL EMPLEADO NO EXISTE O EL DNI NO ES CORRECTO."<<endl;
-                            system("pause");
-                        }
+                    else{
+                        cout<<"NO SE ENCONTRO NINGÚN EMPLEADO."<<endl;
+                        system("pause");
                     }
                 break;
             case 5: bajaCliente();
                 break;
             case 6: bajaEmpleado();
+                break;
+            case 7: mostrarAdminsRegistrados();
+                break;
+            case 8: crearAdmin();
+                break;
+            case 9: bajaAdmin();
                 break;
             case 0: return;
                 break;

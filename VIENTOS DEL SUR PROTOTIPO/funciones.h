@@ -6,11 +6,11 @@ bool buscarPlato(const char *);
 
 bool buscarCliente(int);
 
-bool buscarClienteContra(const char *);
+bool buscarClienteContra(int,const char *);
 
 bool buscarEmpleado(int);
 
-bool buscarEmpleadoContra(const char *);
+bool buscarEmpleadoContra(int,const char *);
 ///
 
 
@@ -19,7 +19,7 @@ bool buscarEmpleadoContra(const char *);
 ///MENU ADMIN
 bool buscarAdmin(int);
 
-bool buscarAdminContra(const char *);
+bool buscarAdminContra(int,const char *);
 
 void menuAdmin(int);
 void crearEmpleado();
@@ -27,6 +27,10 @@ void modificarDatosCliente(int);
 void modificarDatosEmpleado(int);
 void bajaCliente();
 void bajaEmpleado();
+void mostrarAdminsRegistrados();
+void crearAdmin();
+void bajaAdmin();
+void darBajaAdmin(int);
 
 ///
 
@@ -109,6 +113,7 @@ void atenderAlCliente(int,int);
 
 void cobrarVentas(int);
 bool buscarClienteAtendido(int);
+bool buscarDetalle(int);
 void buscarVenta(int,int);
 
 void mostrarVentasCobradas();
@@ -134,7 +139,7 @@ bool buscarCliente(int dni){
     Usuario reg;
     int pos=0;
     while(reg.leerDeDisco(pos)==1){
-        if(reg.getDNI()==dni && reg.getTipo()==3){
+        if(reg.getDNI()==dni && reg.getTipo()==3 && reg.getEstado()==true){
             return true;
         }
         pos++;
@@ -142,11 +147,11 @@ bool buscarCliente(int dni){
     return false;
 }
 
-bool buscarClienteContra(const char *contrasenia){
+bool buscarClienteContra(int dniCliente,const char *contrasenia){
     Usuario reg;
     int pos=0;
     while(reg.leerDeDisco(pos)==1){
-        if(strcmp(reg.getContrasenia(),contrasenia)==0 && reg.getTipo()==3){
+        if(strcmp(reg.getContrasenia(),contrasenia)==0 && reg.getDNI()==dniCliente && reg.getTipo()==3){
             return true;
         }
         pos++;
@@ -158,7 +163,7 @@ bool buscarEmpleado(int dniEmp){
     Usuario reg;
     int pos=0;
     while(reg.leerDeDisco(pos)==1){
-        if(reg.getDNI()==dniEmp && reg.getTipo()==2){
+        if(reg.getDNI()==dniEmp && reg.getTipo()==2 && reg.getEstado()==true){
             return true;
         }
         pos++;
@@ -166,11 +171,11 @@ bool buscarEmpleado(int dniEmp){
     return false;
 }
 
-bool buscarEmpleadoContra(const char *contrasenia){
+bool buscarEmpleadoContra(int dniEmpleado,const char *contrasenia){
     Usuario reg;
     int pos=0;
     while(reg.leerDeDisco(pos)==1){
-        if(strcmp(reg.getContrasenia(),contrasenia)==0 && reg.getTipo()==2){
+        if(strcmp(reg.getContrasenia(),contrasenia)==0 && reg.getDNI()==dniEmpleado && reg.getTipo()==2){
             return true;
         }
         pos++;
@@ -185,7 +190,7 @@ bool buscarAdmin(int dni){
     Usuario reg;
     int pos=0;
     while(reg.leerDeDisco(pos)==1){
-        if(reg.getDNI()==dni && reg.getTipo()==1){
+        if(reg.getDNI()==dni && reg.getTipo()==1 && reg.getEstado()==true){
             return true;
         }
         pos++;
@@ -193,11 +198,11 @@ bool buscarAdmin(int dni){
     return false;
 }
 
-bool buscarAdminContra(const char *contrasenia){
+bool buscarAdminContra(int dniAdmin,const char *contrasenia){
     Usuario reg;
     int pos=0;
     while(reg.leerDeDisco(pos)==1){
-        if(strcmp(reg.getContrasenia(),contrasenia)==0 && reg.getTipo()==1){
+        if(strcmp(reg.getContrasenia(),contrasenia)==0 && reg.getDNI()==dniAdmin && reg.getTipo()==1){
             return true;
         }
         pos++;
@@ -240,7 +245,7 @@ void mostrarEmpleadosRegistrados(){
 void crearEmpleado(){
     system("cls");
     Usuario reg;
-    int pos=0,dni,tipo=2;
+    int dni,tipo=2;
     bool existeEmpleado=false;
     cout<<"**************************"<<endl;
     cout<<"*   REGISTRAR EMPLEADO   *"<<endl;
@@ -250,12 +255,7 @@ void crearEmpleado(){
     if(dni==0){
         return;
     }
-    while(reg.leerDeDisco(pos)==1){
-        if(reg.getDNI()==dni && reg.getTipo()==2){
-            existeEmpleado=true;
-        }
-        pos++;
-    }
+    existeEmpleado=buscarEmpleado(dni);
     if(existeEmpleado==false){
         reg.setDNI(dni);
         reg.Cargar(tipo);
@@ -476,13 +476,13 @@ void bajaCliente(){
     system("cls");
     Usuario reg;
     int pos=0,dniCliente;
-    bool cantReg=false;
+    bool cantReg=false,existeCliente;
     cout<<"*******************************"<<endl;
     cout<<"*    DAR DE BAJA A CLIENTE    *"<<endl;
     cout<<"*******************************"<<endl<<endl;
     cout<<"----------------------------------"<<endl;
     while(reg.leerDeDisco(pos)==1){
-        if(reg.getTipo()==3){
+        if(reg.getTipo()==3 && reg.getEstado()==true){
             cantReg=true;
         }
         pos++;
@@ -490,7 +490,7 @@ void bajaCliente(){
     if(cantReg==true){
         pos=0;
         while(reg.leerDeDisco(pos)==1){
-            if(reg.getTipo()==3){
+            if(reg.getTipo()==3 && reg.getEstado()==true){
                 reg.Mostrar();
                 cout<<"----------------------------------"<<endl;
             }
@@ -501,13 +501,23 @@ void bajaCliente(){
         if(dniCliente==0){
             return;
         }
-        pos=0;
-        while(reg.leerDeDisco(pos)==1){
-            if(reg.getDNI()==dniCliente && reg.getTipo()==3){
-                reg.setEstado(false);
-                cout<<"<<<SE DIÓ DE BAJA AL CLIENTE.>>>"<<endl;
+        existeCliente=buscarCliente(dniCliente);
+        if(existeCliente==true){
+            pos=0;
+            while(reg.leerDeDisco(pos)==1){
+                if(reg.getDNI()==dniCliente && reg.getTipo()==3){
+                    reg.setEstado(false);
+                    reg.modificarEnDisco(pos);
+                    cout<<"<<<SE DIÓ DE BAJA AL CLIENTE.>>>"<<endl;
+                    system("pause");
+                }
+                pos++;
             }
-            pos++;
+        }
+        else{
+            cout<<endl;
+            cout<<"EL DNI NO EXISTE."<<endl;
+            system("pause");
         }
     }
     else{
@@ -520,13 +530,13 @@ void bajaEmpleado(){
     system("cls");
     Usuario reg;
     int pos=0,dniEmpleado;
-    bool cantReg=false;
+    bool cantReg=false,existeEmpleado;
     cout<<"********************************"<<endl;
     cout<<"*    DAR DE BAJA A EMPLEADO    *"<<endl;
     cout<<"********************************"<<endl<<endl;
     cout<<"----------------------------------"<<endl;
     while(reg.leerDeDisco(pos)==1){
-        if(reg.getTipo()==2){
+        if(reg.getTipo()==2 && reg.getEstado()==true){
             cantReg=true;
         }
         pos++;
@@ -534,7 +544,7 @@ void bajaEmpleado(){
     if(cantReg==true){
         pos=0;
         while(reg.leerDeDisco(pos)==1){
-            if(reg.getTipo()==2){
+            if(reg.getTipo()==2 && reg.getEstado()==true){
                 reg.Mostrar();
                 cout<<"----------------------------------"<<endl;
             }
@@ -545,18 +555,132 @@ void bajaEmpleado(){
         if(dniEmpleado==0){
             return;
         }
-        pos=0;
-        while(reg.leerDeDisco(pos)==1){
-            if(reg.getDNI()==dniEmpleado && reg.getTipo()==2){
-                reg.setEstado(false);
-                cout<<"<<<SE DIÓ DE BAJA AL EMPLEADO.>>>"<<endl;
+        existeEmpleado=buscarEmpleado(dniEmpleado);
+        if(existeEmpleado==true){
+            pos=0;
+            while(reg.leerDeDisco(pos)==1){
+                if(reg.getDNI()==dniEmpleado && reg.getTipo()==2){
+                    reg.setEstado(false);
+                    reg.modificarEnDisco(pos);
+                    cout<<"<<<SE DIÓ DE BAJA AL EMPLEADO.>>>"<<endl;
+                    system("pause");
+                }
+                pos++;
             }
-            pos++;
+        }
+        else{
+            cout<<endl;
+            cout<<"EL DNI NO EXISTE."<<endl;
+            system("pause");
         }
     }
     else{
         cout<<"NO HAY EMPLEADOS REGISTRADOS AÚN."<<endl;
         system("pause");
+    }
+}
+
+void mostrarAdminsRegistrados(){
+    system("cls");
+    Usuario reg;
+    int pos=0;
+    cout<<"***********************************"<<endl;
+    cout<<"*                                 *"<<endl;
+    cout<<"*   ADMINISTRADORES REGISTRADOS   *"<<endl;
+    cout<<"*                                 *"<<endl;
+    cout<<"***********************************"<<endl<<endl;
+    cout<<"----------------------------------"<<endl;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getTipo()==1 && reg.getEstado()==true){
+            reg.Mostrar();
+            cout<<"----------------------------------"<<endl;
+        }
+        pos++;
+    }
+    system("pause");
+}
+
+void crearAdmin(){
+    system("cls");
+    Usuario reg;
+    int dni;
+    bool existeAdmin,tipo=1;
+    cout<<"*******************************"<<endl;
+    cout<<"*    REGISTRAR NUEVO ADMIN    *"<<endl;
+    cout<<"*******************************"<<endl<<endl;
+    cout<<"DNI: ";
+    cin>>dni;
+    if(dni==0){
+        return;
+    }
+    existeAdmin=buscarAdmin(dni);
+    if(existeAdmin==false){
+        reg.setDNI(dni);
+        reg.Cargar(tipo);
+        reg.grabarEnDisco();
+    }
+    else{
+        cout<<"EL ADMIN YA EXISTE."<<endl;
+        system("pause");
+    }
+}
+
+void bajaAdmin(){
+    system("cls");
+    Usuario reg;
+    int pos=0,cantidad=0,dniAdmin;
+    bool existeAdmin;
+    cout<<"*****************************"<<endl;
+    cout<<"*    DAR DE BAJA A ADMIN    *"<<endl;
+    cout<<"*****************************"<<endl<<endl;
+    cout<<"----------------------------------"<<endl;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getTipo()==1 && reg.getEstado()==true){
+            cantidad++;
+        }
+        pos++;
+    }
+    if(cantidad==1){
+        cout<<"PARA DAR DE BAJA A UN ADMIN ES NECESARIO QUE HAYA MÁS DE UNO."<<endl;
+        system("pause");
+    }
+    else{
+        pos=0;
+        while(reg.leerDeDisco(pos)==1){
+            if(reg.getTipo()==1){
+                reg.Mostrar();
+                cout<<"----------------------------------"<<endl;
+            }
+            pos++;
+        }
+        cout<<"ESCOJA EL DNI DEL ADMIN: ";
+        cin>>dniAdmin;
+        if(dniAdmin==0){
+            return;
+        }
+        existeAdmin=buscarAdmin(dniAdmin);
+        if(existeAdmin==true){
+            darBajaAdmin(dniAdmin);
+            cout<<endl;
+            cout<<"<<<EL ADMIN SE DIÓ DE BAJA.>>>"<<endl;
+            system("pause");
+        }
+        else{
+            cout<<"EL DNI NO EXISTE O NO ES CORRECTO."<<endl;
+            system("pause");
+        }
+    }
+}
+
+void darBajaAdmin(int dniAdmin){
+    Usuario reg;
+    int pos=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getDNI()==dniAdmin && reg.getTipo()==1){
+            reg.setEstado(false);
+            reg.modificarEnDisco(pos);
+        }
+        pos++;
     }
 }
 ///
@@ -584,7 +708,7 @@ void agregarPlato(){
         reg.grabarEnDisco();
     }
     else{
-        cout<<"EL CÓDIGO DE PLATO NO EXISTE O NO ES CORRECTO."<<endl;
+        cout<<"EL CÓDIGO DE PLATO YA EXISTE."<<endl;
         system("pause");
     }
 }
@@ -953,7 +1077,7 @@ void eliminarPlato(){
 void restablecerPlato(){
     system("cls");
     Plato reg;
-    int pos=0;
+    int pos=0,cantidad;
     char codPlat[6];
     bool existePlato,cantReg=false;
     cout<<"*****************************"<<endl;
@@ -978,8 +1102,22 @@ void restablecerPlato(){
             pos=0;
             while(reg.leerDeDisco(pos)==1){
                 if(strcmp(reg.getCodigoPlato(),codPlat)==0 && reg.getEstado()==0){
-                    reg.setEstado(1);
-                    reg.modificarEnDisco(pos);
+                    if(reg.getStock()==0){
+                        cout<<"CANTIDAD DE STOCK: ";
+                        cin>>cantidad;
+                        while(cantidad<=0){
+                            cout<<"LA CANTIDAD DEBE SER MAYOR A 0."<<endl;
+                            cout<<"CANTIDAD DE STOCK: ";
+                            cin>>cantidad;
+                        }
+                        reg.setStock(cantidad);
+                        reg.setEstado(true);
+                        reg.modificarEnDisco(pos);
+                    }
+                    else{
+                        reg.setEstado(true);
+                        reg.modificarEnDisco(pos);
+                    }
                     cout<<"<<<PLATO RESTABLECIDO>>>"<<endl;
                     system("pause");
                 }
@@ -1323,11 +1461,12 @@ void restanteStock(const char *codPlat){
 }
 
 void cancelarPedido(int dni){
-    system("cls");
     VentaCabecera reg;
-    int pos=0,iddetalle,opc;
+    int pos,iddetalle,opc;
     bool cancelarOtro=true,cantReg,errorDetalle=false;
     while(cancelarOtro==true){
+        system("cls");
+        pos=0;
         cantReg=false;
         cout<<"*******************************"<<endl;
         cout<<"*                             *"<<endl;
@@ -1354,7 +1493,6 @@ void cancelarPedido(int dni){
             cout<<"ID DE DETALLE: ";
             cin>>iddetalle;
             if(iddetalle==0){
-                cout<<"<<<OPERACIÓN CANCELADA>>>"<<endl;
                 return;
             }
             pos=0;
@@ -1370,7 +1508,7 @@ void cancelarPedido(int dni){
             }
             if(errorDetalle==false){
                 cout<<"EL ID DE DETALLE INGRESADO NO EXISTE."<<endl;
-                return;
+                system("pause");
             }
             cout<<"¿QUIÉRE CANCELAR ALGO MÁS? SI(1)/NO(0)"<<endl;
             cin>>opc;
@@ -1423,7 +1561,7 @@ void devolverStock(const char *codPlat,int cantidad){
 
 ///MENU VENTAS/PEDIDOS
 
-///MENU VENTAS CLIENTES
+///MENU PEDIDOS CLIENTES
 void menuVentasCliente(int dni){
     int opc;
     while(true){
@@ -1522,6 +1660,7 @@ float acumlarPrecio(int iddetalle){
     return precio;
 }
 
+///MENU VENTAS EMPLEADOS
 void mostrarVentas(){
     system("cls");
     VentaDetalle reg;
@@ -1641,7 +1780,7 @@ bool buscarIDDetalle(int iddetalle){
     while(reg.leerDeDisco(pos1)==1){
         if(reg.getIDDetalle()==iddetalle){
             while(aux.leerDeDisco(pos2)==1){
-                if(aux.getIDDetalle()==iddetalle && aux.getDNIEmpleado()==0){
+                if(aux.getIDDetalle()==iddetalle && aux.getDNIEmpleado()==0 && reg.getEstado()==true){
                     return true;
                 }
                 pos2++;
@@ -1686,7 +1825,7 @@ void cobrarVentas(int dniEmp){
             return;
         }
         clienteAtendido=buscarClienteAtendido(iddetalle);
-        existeDetalle=buscarIDDetalle(iddetalle);
+        existeDetalle=buscarDetalle(iddetalle);
         if(existeDetalle==true && clienteAtendido==true){
             cout<<endl;
             buscarVenta(iddetalle,dniEmp);
@@ -1724,6 +1863,18 @@ bool buscarClienteAtendido(int iddetalle){
             if(reg.getDNIEmpleado()>0){
                 return true;
             }
+        }
+        pos++;
+    }
+    return false;
+}
+
+bool buscarDetalle(int iddetalle){
+    VentaCabecera reg;
+    int pos=0;
+    while(reg.leerDeDisco(pos)==1){
+        if(reg.getIDDetalle()==iddetalle){
+            return true;
         }
         pos++;
     }
